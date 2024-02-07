@@ -6,6 +6,9 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +21,6 @@ public class User {
     private String name;
     private String email;
     private String password;
+    @UpdateTimestamp
+    private Timestamp createdAt;
 }
