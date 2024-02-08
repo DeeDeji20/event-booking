@@ -20,16 +20,18 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(max = 100)
+//    @Size(max = 100)
     private String name;
     @NotNull
     private LocalDateTime date;
-    @Positive
-    @Max(1000)
+//    @Positive
+//    @Max(1000)
     private int availableAttendeesCount;
-    @Size(max = 500)
+//    @Size(max = 500)
     private String description;
     @NotNull
     @Enumerated(EnumType.STRING)
     private Category category;
+    @ManyToOne
+    private User createdBy;
 }

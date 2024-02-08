@@ -25,17 +25,14 @@ public class DevEventAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         boolean isPasswordValid = passwordEncoder.matches(password, userDetails.getPassword());
-        if (isPasswordValid){
-            Authentication authenticationResult =
-                    new UsernamePasswordAuthenticationToken(null, null, userDetails.getAuthorities());
-            return authenticationResult;
-        }
+        if (isPasswordValid) return new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
+
         //TODO: remove hardcoded values
         throw new BadCredentialsException("Incorrect Authentication Credentials Supplied");
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return UsernamePasswordAuthenticationToken.class.equals(authentication);
     }
 }

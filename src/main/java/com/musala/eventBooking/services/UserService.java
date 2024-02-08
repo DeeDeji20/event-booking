@@ -1,7 +1,7 @@
 package com.musala.eventBooking.services;
 
-import com.musala.eventBooking.dtos.request.UserRegistrationDto;
+import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
 
 public interface UserService {
-    String createUser(UserRegistrationDto userRegistrationDto);
+    String createUser(UserRegistrationRequest userRegistrationRequest);
 }

@@ -8,5 +8,6 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("Creating seed user and event data...");
+
     }
 }

@@ -1,17 +1,17 @@
 package com.musala.eventBooking.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.musala.eventBooking.models.enums.Authority;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
-@Data
+@Builder
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,4 +25,8 @@ public class User {
     private String password;
     @UpdateTimestamp
     private Timestamp createdAt;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Authority> authorities;
+
+
 }

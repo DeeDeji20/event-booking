@@ -1,7 +1,10 @@
 package com.musala.eventBooking.security.filters;
 
+import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musala.eventBooking.dtos.request.LoginRequest;
+import com.musala.eventBooking.dtos.response.LoginResponse;
+import com.musala.eventBooking.security.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +20,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 @AllArgsConstructor
 public class DevEventAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private static final ObjectMapper mapper = new ObjectMapper();
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -41,8 +51,17 @@ public class DevEventAuthenticationFilter extends UsernamePasswordAuthentication
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+        String token = jwtService.generateTokenFor(authResult.getPrincipal().toString());
 
+        LoginResponse authenticationResponse = new LoginResponse();
+        authenticationResponse.setAccessToken(token);
+        response.getOutputStream().write(mapper.writeValueAsBytes(authenticationResponse));
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.flushBuffer();
     }
 
     @Override
@@ -52,7 +71,6 @@ public class DevEventAuthenticationFilter extends UsernamePasswordAuthentication
 
     private static LoginRequest extractAuthenticationCredentialsFrom(HttpServletRequest request) {
         //TODO: remove hardcoded values
-        ObjectMapper mapper = new ObjectMapper();
         try(InputStream inputStream = request.getInputStream()){
             byte[] requestBody =  inputStream.readAllBytes();
             return mapper.readValue(requestBody, LoginRequest.class);

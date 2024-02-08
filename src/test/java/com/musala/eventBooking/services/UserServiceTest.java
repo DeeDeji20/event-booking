@@ -1,6 +1,6 @@
 package com.musala.eventBooking.services;
 
-import com.musala.eventBooking.dtos.request.UserRegistrationDto;
+import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
 import com.musala.eventBooking.exception.AppException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,11 +16,11 @@ class UserServiceTest {
     @Autowired
     private UserService userService;
 
-    private UserRegistrationDto userRegistrationDto;
+    private UserRegistrationRequest userRegistrationRequest;
 
     @BeforeEach
     void setup(){
-        userRegistrationDto = UserRegistrationDto.builder()
+        userRegistrationRequest = UserRegistrationRequest.builder()
                 .email("test@email.com")
                 .name("John Doe")
                 .password("password")
@@ -29,17 +29,17 @@ class UserServiceTest {
 
     @Test
     void createUser() {
-        String response = userService.createUser(userRegistrationDto);
-        assertThat(response).isEqualTo("User created successfully");
+        String response = userService.createUser(userRegistrationRequest);
+        assertThat(response).isEqualToIgnoringCase("User created successfully");
     }
 
     @Test
     void testThatUserAlreadyExists_ThrowsException(){
-        assertThrows(AppException.class,()-> userService.createUser(userRegistrationDto));
+        assertThrows(AppException.class,()-> userService.createUser(userRegistrationRequest));
     }
 
     @Test
     void testThatUserEmailIsValid(){
-        assertThrows(AppException.class,()-> userService.createUser(userRegistrationDto));
+        assertThrows(AppException.class,()-> userService.createUser(userRegistrationRequest));
     }
 }
