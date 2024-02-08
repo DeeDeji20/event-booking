@@ -6,7 +6,6 @@ import com.musala.eventBooking.models.Event;
 import com.musala.eventBooking.models.enums.Category;
 import com.musala.eventBooking.repositories.EventRepository;
 import com.musala.eventBooking.services.EventService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class DevEventService implements EventService {
         Event savedEvent = eventRepository.save(event);
         return EventResponse.builder()
                 .id(savedEvent.getId())
-                .eventDate(savedEvent.getDate())
+                .eventDate(savedEvent.getEventDate())
                 .name(savedEvent.getName())
                 .build();
     }
