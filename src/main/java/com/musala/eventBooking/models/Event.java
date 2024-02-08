@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +23,7 @@ public class Event {
     @Size(max = 100)
     private String name;
     @NotNull
-    private Timestamp date;
+    private LocalDateTime date;
     @Positive
     @Max(1000)
     private int availableAttendeesCount;
