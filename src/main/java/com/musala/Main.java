@@ -34,8 +34,8 @@ public class Main {
             user.setAuthorities(Set.of(Authority.USER));
             userRepository.save(user);
 
-            Event event1 = Event.builder().eventStatus(EventStatus.UPCOMING).category(Category.GAME).name("Game time").description("Time out for games").eventDate(LocalDateTime.of(LocalDate.of(2024, 1, 15), LocalTime.of(10, 0, 0))).build();
-            Event event2 = Event.builder().eventStatus(EventStatus.ENDED).category(Category.CONFERENCE).name("Conference time").description("Meeting").eventDate(LocalDateTime.of(LocalDate.of(2024, 1, 6), LocalTime.of(9, 0, 0))).build();
+            Event event1 = Event.builder().eventStatus(EventStatus.UPCOMING).category(Category.GAME).name("Game time").description("Time out for games").eventDate(LocalDateTime.of(LocalDate.of(2024, 1, 15), LocalTime.of(10, 0, 0))).maxAttendeesCount(100).build();
+            Event event2 = Event.builder().eventStatus(EventStatus.ENDED).category(Category.CONFERENCE).name("Conference time").description("Meeting").eventDate(LocalDateTime.of(LocalDate.of(2024, 1, 6), LocalTime.of(9, 0, 0))).maxAttendeesCount(100).build();
 
             eventRepository.save(event1);
             eventRepository.save(event2);

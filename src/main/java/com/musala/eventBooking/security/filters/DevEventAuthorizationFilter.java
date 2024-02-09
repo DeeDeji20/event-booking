@@ -30,15 +30,15 @@ public class DevEventAuthorizationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         Collection<String> authenticationWhiteList = getAuthenticationWhiteList();
         boolean isEndpointPublic = authenticationWhiteList.contains(request.getServletPath());
-
         if (isEndpointPublic) {
             filterChain.doFilter(request, response);
         }else {
             String authorizationHeader = request.getHeader("AUTHORIZATION");
             String token = extractTokenFrom(authorizationHeader);
+            System.out.println(token);
             UserDetails userDetails = jwtService.extractUserDetailsFrom(token);
             authorize(userDetails);
-            filterChain.doFilter(request, response);
+//            filterChain.doFilter(request, response);
         }
     }
 
@@ -48,6 +48,7 @@ public class DevEventAuthorizationFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("In context -->"+SecurityContextHolder.getContext());
     }
 
     private static String extractTokenFrom(String authorizationHeader) {

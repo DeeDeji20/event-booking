@@ -2,6 +2,7 @@ package com.musala.eventBooking.services;
 
 import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
 import com.musala.eventBooking.exception.AppException;
+import com.musala.eventBooking.services.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

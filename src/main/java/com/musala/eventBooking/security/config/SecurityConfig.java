@@ -1,12 +1,14 @@
 package com.musala.eventBooking.security.config;
 
 
+import com.musala.eventBooking.models.enums.Authority;
 import com.musala.eventBooking.security.filters.DevEventAuthenticationFilter;
 import com.musala.eventBooking.security.filters.DevEventAuthorizationFilter;
 import com.musala.eventBooking.security.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,7 +33,9 @@ public class SecurityConfig {
                    .sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                    .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
                    .addFilterBefore(authorizationFilter, DevEventAuthenticationFilter.class)
-                   .authorizeHttpRequests(c->c.requestMatchers("/auth/login").permitAll())
+                   .authorizeHttpRequests(c->c.requestMatchers("/auth/login").permitAll()
+                           .requestMatchers(HttpMethod.GET, "/api/reservation").permitAll()
+                   )
                    .authorizeHttpRequests(c->c.anyRequest().authenticated())
                    .build();
     }

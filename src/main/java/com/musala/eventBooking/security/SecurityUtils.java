@@ -9,7 +9,8 @@ public class SecurityUtils {
     public static Collection<String> getAuthenticationWhiteList(){
         return Set.of(
                 "/auth/login",
-                "/register"
+                "/register",
+                "/api/reservation"
         );
     }
 }

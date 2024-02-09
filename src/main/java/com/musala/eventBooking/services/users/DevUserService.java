@@ -1,11 +1,10 @@
-package com.musala.eventBooking.services.impl;
+package com.musala.eventBooking.services.users;
 
 import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
 import com.musala.eventBooking.exception.AppException;
 import com.musala.eventBooking.models.User;
 import com.musala.eventBooking.repositories.UserRepository;
 import com.musala.eventBooking.security.models.Principal;
-import com.musala.eventBooking.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +29,11 @@ public class DevUserService implements UserService, UserDetailsService {
                 .build();
         userRepository.save(user);
         return "User Created Successfully";
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return findUserBy(email);
     }
 
     private User findUserBy(String email){

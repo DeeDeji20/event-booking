@@ -3,6 +3,7 @@ package com.musala.eventBooking.services;
 import com.musala.eventBooking.dtos.response.EventReservationResponse;
 import com.musala.eventBooking.exception.AppException;
 import com.musala.eventBooking.exception.ConflictException;
+import com.musala.eventBooking.services.reservations.ReservationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

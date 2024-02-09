@@ -1,14 +1,17 @@
 package com.musala.eventBooking.services;
 
 import com.musala.eventBooking.dtos.request.EventCreationRequest;
-import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
 import com.musala.eventBooking.dtos.response.EventResponse;
+import com.musala.eventBooking.models.User;
+import com.musala.eventBooking.models.enums.Authority;
+import com.musala.eventBooking.services.events.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +35,11 @@ class EventServiceTest {
 
     @Test
     void createEvent() {
-        EventResponse response = eventService.createEvent(eventCreationRequest);
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@email.com");
+        user.setAuthorities(Set.of(Authority.USER));
+        EventResponse response = eventService.createEvent(eventCreationRequest, user);
         assertNotNull(response);
     }
 }

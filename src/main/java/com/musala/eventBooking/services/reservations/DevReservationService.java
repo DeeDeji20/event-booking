@@ -1,18 +1,25 @@
-package com.musala.eventBooking.services.impl;
+package com.musala.eventBooking.services.reservations;
 
 import com.musala.eventBooking.dtos.response.EventReservationResponse;
-import com.musala.eventBooking.exception.AppException;
+import com.musala.eventBooking.dtos.response.ReservationList;
+import com.musala.eventBooking.dtos.response.ReservationResponse;
 import com.musala.eventBooking.exception.ConflictException;
 import com.musala.eventBooking.exception.NotFoundException;
 import com.musala.eventBooking.models.Event;
 import com.musala.eventBooking.models.Reservation;
-import com.musala.eventBooking.models.User;
 import com.musala.eventBooking.models.enums.ReservationStatus;
 import com.musala.eventBooking.repositories.EventRepository;
 import com.musala.eventBooking.repositories.ReservationRepository;
-import com.musala.eventBooking.services.ReservationService;
+import com.musala.eventBooking.services.reservations.ReservationService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.musala.eventBooking.models.enums.EventStatus.ENDED;
 import static com.musala.eventBooking.util.AppUtil.NOT_FOUND;
@@ -25,6 +32,8 @@ public class DevReservationService implements ReservationService {
     private final EventRepository eventRepository;
     
     private final ReservationRepository reservationRepository;
+
+    private final ModelMapper mapper;
 
     @Override
     public EventReservationResponse bookReservation(Long eventId) {
@@ -49,6 +58,22 @@ public class DevReservationService implements ReservationService {
                     .build();
         }
        throw new ConflictException("No available bookings for event");
+    }
+
+//    @Cacheable(cacheNames = "cache1", key = "'#key'")
+    @Override
+    public ReservationList listReservations(PageRequest pageable) {
+        Page<Reservation> reservationPage = reservationRepository.findAll(pageable);
+        List<ReservationResponse> reservationResponses = new ArrayList<>();
+        List<Reservation> x = reservationPage.getContent();
+        System.out.println(x);
+        for (Reservation y:x){
+            ReservationResponse response = mapper.map(y, ReservationResponse.class);
+            reservationResponses.add(response);
+        }
+        return new ReservationList(reservationResponses, PageRequest.of(reservationPage.getPageable().getPageNumber(),
+                reservationPage.getPageable().getPageSize(), Sort.Direction.DESC, "id"), reservationPage.getTotalPages()
+                );
     }
 
     private Reservation buildReservation(Event event) {
