@@ -1,6 +1,8 @@
 package com.musala.eventBooking.services;
 
 
+import com.musala.eventBooking.dtos.response.EventReservationResponse;
+
 public interface ReservationService {
-    String bookReservation(Long eventId);
+    EventReservationResponse bookReservation(Long eventId);
 }

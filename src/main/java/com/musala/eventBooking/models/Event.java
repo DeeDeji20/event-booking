@@ -3,14 +3,18 @@ package com.musala.eventBooking.models;
 import com.musala.eventBooking.models.enums.Category;
 import com.musala.eventBooking.models.enums.EventStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,8 +27,7 @@ public class Event {
     private String name;
     @NotNull
     private LocalDateTime eventDate;
-//    @Positive
-//    @Max(1000)
+    private int maxAttendeesCount;
     private int availableAttendeesCount;
 //    @Size(max = 500)
     private String description;

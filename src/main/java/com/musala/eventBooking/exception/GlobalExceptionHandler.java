@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.naming.AuthenticationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,15 @@ public class GlobalExceptionHandler {
         ValidationMessage errorMessage =
                 new ValidationMessage(new Date(), 0, ex.getMessage());
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        ValidationMessage errorMessage =
+                new ValidationMessage(new Date(), 0, ex.getMessage());
+        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConflictException.class)

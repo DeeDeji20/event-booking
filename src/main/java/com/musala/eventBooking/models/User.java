@@ -27,5 +27,4 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Authority> authorities;
 
-
 }
