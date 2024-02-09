@@ -8,6 +8,7 @@ import com.musala.eventBooking.services.events.EventService;
 import com.musala.eventBooking.services.users.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,8 +38,14 @@ public class EventController {
     }
 
     @GetMapping(value = "/{criteria}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    private ResponseEntity<?> findEventBy(@PathVariable("criteria") String criteria){
-        List<EventResponse> eventResponse = eventService.findEventBy(criteria);
+    private ResponseEntity<?> findEventBy(@PathVariable("criteria") String criteria,
+                                          @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+                                          @RequestParam(value = "pageSize", required = false, defaultValue = "25") Integer pageSize
+    ){
+        if (pageNumber < 0) pageNumber = 1;
+        if (pageSize < 1) pageNumber=1;
+
+        List<EventResponse> eventResponse = eventService.findAvailableEventsBy(criteria, PageRequest.of(pageNumber, pageSize));
         return ResponseEntity.ok(eventResponse);
     }
 }

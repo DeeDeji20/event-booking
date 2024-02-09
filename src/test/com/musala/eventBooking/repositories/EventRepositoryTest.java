@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,23 +22,23 @@ public class EventRepositoryTest {
     }
 
     @Test
-    void testFindByCriteria_findByCategory(){
-        Pageable pageable = PageRequest.of(1,15);
-        Page<Event> events = eventRepository.findByCategoryOrAndEventDateOrName("GAME", pageable);
+    void testFindAvailableEventsByCriteria_findByCategory(){
+        Page<Event> events = eventRepository.findEventByParameter("GAME",PageRequest.of(0,15, Sort.Direction.DESC, "id"));
+        System.out.println(events.stream().findFirst());
         assertThat(events.getTotalElements()).isEqualTo(1L);
     }
 
     @Test
-    void testFindByCriteria_findByName(){
-        Pageable pageable = PageRequest.of(1,15);
-        Page<Event> events = eventRepository.findByCategoryOrAndEventDateOrName("Game time", pageable);
+    void testFindAvailableEventsByCriteria_findByName(){
+        Page<Event> events = eventRepository.findEventByParameter("Game time", PageRequest.of(0, 15, Sort.Direction.DESC, "id"));
+        System.out.println(events.stream().findFirst());
         assertThat(events.getTotalElements()).isEqualTo(1L);
     }
 
     @Test
-    void testFindByCriteria_findByEventDate(){
-        Pageable pageable = PageRequest.of(1,15);
-        Page<Event> events = eventRepository.findByCategoryOrAndEventDateOrName("2024-01-15", pageable);
+    void testFindAvailableEventsByCriteria_findByEventDate(){
+        Page<Event> events = eventRepository.findEventByParameter("2024-01-06",  PageRequest.of(0, 15, Sort.Direction.DESC, "id"));
+        System.out.println(events.stream().toList());
         assertThat(events.getTotalElements()).isEqualTo(1L);
     }
 }

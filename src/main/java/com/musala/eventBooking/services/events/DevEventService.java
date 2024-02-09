@@ -8,6 +8,8 @@ import com.musala.eventBooking.models.enums.Category;
 import com.musala.eventBooking.repositories.EventRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,8 +39,8 @@ public class DevEventService implements EventService {
     }
 
     @Override
-    public List<EventResponse> findEventBy(String criteria) {
-//        eventRepository
-        return null;
+    public List<EventResponse> findAvailableEventsBy(String criteria, PageRequest pageable) {
+        Page<Event> eventPage = eventRepository.findEventByParameter(criteria, pageable);
+        return eventPage.getContent().stream().map(event -> mapper.map(event, EventResponse.class)).toList();
     }
 }
