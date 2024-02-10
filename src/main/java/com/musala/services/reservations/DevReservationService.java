@@ -1,14 +1,15 @@
 package com.musala.services.reservations;
 
-import com.musala.dtos.response.*;
-import com.musala.exception.ConflictException;
+import com.musala.dtos.response.ApiResponse;
+import com.musala.dtos.response.ReservationList;
+import com.musala.dtos.response.ReservationResponse;
 import com.musala.exception.NotFoundException;
 import com.musala.models.Event;
 import com.musala.models.Reservation;
 import com.musala.models.User;
 import com.musala.models.enums.ReservationStatus;
-import com.musala.repositories.EventRepository;
 import com.musala.repositories.ReservationRepository;
+import com.musala.services.events.EventService;
 import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,16 +23,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.musala.models.enums.EventStatus.ENDED;
-import static com.musala.util.AppUtil.NOT_FOUND;
+import static com.musala.models.enums.ReservationStatus.CANCELED;
 import static com.musala.util.AppUtil.createPageRequestWith;
-import static java.math.BigInteger.ONE;
 
 @Service
 @AllArgsConstructor
 public class DevReservationService implements ReservationService {
-
-    private final EventRepository eventRepository;
     
     private final ReservationRepository reservationRepository;
 
@@ -39,31 +36,16 @@ public class DevReservationService implements ReservationService {
 
     private final ModelMapper mapper;
 
+
     @Override
-    public EventReservationResponse bookReservation(Long eventId, long user) {
-        //find the event
-        Event event = eventRepository.findById(eventId).orElseThrow(()-> new NotFoundException(NOT_FOUND));
-        //check if the event has status of not ended
-        boolean isEnded = event.getEventStatus().name().equals(ENDED.name());
-        if (isEnded)  throw new ConflictException("Event has ended");
-        boolean isAvailableAttendeesCount = event.getAvailableAttendeesCount() < event.getMaxAttendeesCount();
-        if(isAvailableAttendeesCount) {
-            Reservation reservation = buildReservation(event, user);
-            event.setAvailableAttendeesCount(event.getAvailableAttendeesCount()+ONE.intValue());
-            eventRepository.save(event);
-            UserResponse mappedUser = mapper.map(user, UserResponse.class);
-            return EventReservationResponse.builder()
-                    .reservationId(reservation.getId())
-                    .name(event.getName())
-                    .description(event.getDescription())
-                    .category(event.getCategory())
-                    .eventStatus(event.getEventStatus())
-                    .eventDate(event.getEventDate())
-                    .reservationStatus(ReservationStatus.BOOKED)
-                    .user(mappedUser)
-                    .build();
-        }
-       throw new ConflictException("No available bookings for event");
+    public void createReservationFor(Event event, int ticketCount) {
+        Reservation reservation = new Reservation();
+        reservation.setEvent(event);
+        reservation.setCreatedAt(event.getCreatedAt());
+        reservation.setUser(event.getCreatedBy());
+        reservation.setUpdatedAt(event.getCreatedAt());
+        reservation.setTicketCount(ticketCount);
+        reservationRepository.save(reservation);
     }
 
     @Cacheable(cacheNames = "cache1", key = "'#key'")
@@ -96,10 +78,13 @@ public class DevReservationService implements ReservationService {
 
     @Override
     public ReservationResponse getReservationBy(Long id) {
-        return mapper.map(reservationRepository.findById(id)
+        return mapper.map(findBy(id), ReservationResponse.class);
+    }
+
+    private Reservation findBy(Long id){
+        return reservationRepository.findById(id)
                 .orElseThrow(()->new NotFoundException(
-                        String.format("Reservation with id %d not found", id))), ReservationResponse.class
-        );
+                        String.format("Reservation with id %d not found", id)));
     }
 
     @Override
@@ -107,7 +92,9 @@ public class DevReservationService implements ReservationService {
         Reservation foundReservation = reservationRepository.findById(id).orElseThrow(()->new NotFoundException(
                 String.format("Reservation with id %d not found", id)));
 
-        foundReservation.setReservationStatus(ReservationStatus.CANCELED);
+        Event event = foundReservation.getEvent();
+        event.setAvailableAttendeesCount(event.getAvailableAttendeesCount() - foundReservation.getTicketCount());
+        foundReservation.setReservationStatus(CANCELED);
         Reservation savedReservation = reservationRepository.save(foundReservation);
         return new ApiResponse<>(mapper.map(savedReservation, ReservationResponse.class));
     }

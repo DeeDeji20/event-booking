@@ -2,14 +2,16 @@ package com.musala.services.reservations;
 
 
 import com.musala.dtos.response.ApiResponse;
-import com.musala.dtos.response.EventReservationResponse;
 import com.musala.dtos.response.ReservationList;
 import com.musala.dtos.response.ReservationResponse;
+import com.musala.models.Event;
+import com.musala.models.User;
 
 import java.util.List;
 
 public interface ReservationService {
-    EventReservationResponse bookReservation(Long eventId, long user);
+
+    void createReservationFor(Event event, int ticketCount);
 
     ReservationList listReservations(Integer page, Integer size);
 
@@ -19,4 +21,7 @@ public interface ReservationService {
     ApiResponse<ReservationResponse> cancelReservation(Long id);
 
     ReservationResponse getReservationBy(Long id);
+
+
+
 }

@@ -13,6 +13,7 @@ import com.musala.models.User;
 import com.musala.models.enums.Category;
 import com.musala.repositories.EventRepository;
 import com.musala.security.services.JwtService;
+import com.musala.services.reservations.ReservationService;
 import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class DevEventService implements EventService {
     private final EventRepository eventRepository;
     private final JwtService jwtService;
     private final UserService userService;
-
+    private final ReservationService reservationService;
     private final ModelMapper mapper;
 
     @Override
@@ -83,7 +84,8 @@ public class DevEventService implements EventService {
             response.setMessage("System was only able to reserve "+ numberOfTickets +"slots for you as there were only that many slots left");
         }
         reserveTicket(foundEvent, numberOfTickets);
-        eventRepository.save(foundEvent);
+        Event savedEvent = eventRepository.save(foundEvent);
+        reservationService.createReservationFor(savedEvent, ticketRequest.getAttendeesCount());
         response.setMessage("Tickets reserved successfully");
         return response;
     }

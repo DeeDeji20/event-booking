@@ -41,21 +41,6 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-
-
-
-//    @GetMapping(value = "/{criteria}", produces = {MediaType.APPLICATION_JSON_VALUE})
-//    private ResponseEntity<?> findEventBy(@PathVariable("criteria") String criteria,
-//                                          @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-//                                          @RequestParam(value = "pageSize", required = false, defaultValue = "25") Integer pageSize
-//    ){
-//        if (pageNumber < 0) pageNumber = 1;
-//        if (pageSize < 1) pageNumber=1;
-//
-//        List<EventResponse> eventResponse = eventService.findAvailableEventsBy(criteria, PageRequest.of(pageNumber, pageSize));
-//        return ResponseEntity.ok(eventResponse);
-//    }
-
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<?> findEventByV2(@RequestParam("name") String name,
                                           @RequestParam("start_date") String startDate,

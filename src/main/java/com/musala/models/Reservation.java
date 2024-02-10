@@ -11,6 +11,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +27,10 @@ public class Reservation {
     private ReservationStatus reservationStatus;
     @ManyToOne
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = {PERSIST, MERGE})
     private Event event;
+
+    private Integer ticketCount;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

@@ -4,6 +4,7 @@ import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.EventReservationResponse;
 import com.musala.dtos.response.ReservationResponse;
 import com.musala.exception.ConflictException;
+import com.musala.models.Event;
 import com.musala.models.User;
 import com.musala.models.enums.Authority;
 import com.musala.models.enums.ReservationStatus;
@@ -33,27 +34,6 @@ class ReservationServiceTest {
         user.setEmail("test@email.com");
         user.setAuthorities(Set.of(Authority.USER));
     }
-
-    @Test
-    void testBookReservation() {
-        EventReservationResponse eventReservationResponse = reservationService.bookReservation(1L, 1L);
-        System.out.println(eventReservationResponse);
-        assertThat(eventReservationResponse).isNotNull();
-        assertThat(eventReservationResponse.getEventStatus().name()).isEqualTo("UPCOMING");
-        assertThat(eventReservationResponse.getReservationStatus().name()).isEqualTo("BOOKED");
-    }
-
-    @Test
-    void testThatWhenMaxAccountReservationIsReached_ThrowsException(){
-        Exception exception = assertThrows(ConflictException.class, ()-> reservationService.bookReservation(1L, 0));
-        String actualMessage = exception.getMessage();
-        assertThat(actualMessage).isEqualToIgnoringCase("No available bookings for event");
-    }
-
-//    @Test
-//    void testBookReservation_WhenEventHasEnded(){
-//        assertThrows(AppException.class, ()-> reservationService.bookReservation(1L, 0));
-//    }
 
     @Test
     @Sql(scripts = {"/db/insert.sql"})
