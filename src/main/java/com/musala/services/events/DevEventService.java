@@ -1,11 +1,9 @@
 package com.musala.services.events;
 
 import com.musala.dtos.request.EventCreationRequest;
-import com.musala.dtos.request.EventSearchRequest;
 import com.musala.dtos.request.TicketRequest;
 import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
-import com.musala.dtos.response.UserResponse;
 import com.musala.exception.AppException;
 import com.musala.exception.NotFoundException;
 import com.musala.models.Event;
@@ -19,13 +17,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.musala.models.enums.EventStatus.UPCOMING;
@@ -56,9 +52,10 @@ public class DevEventService implements EventService {
     }
 
     @Override
-    public List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category) {
-        List<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category);
-        return events.stream().map(event -> mapper.map(event, EventResponse.class)).toList();
+    public List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category, Integer page, Integer size) {
+        PageRequest pageRequest = createPageRequestWith(page, size);
+        Page<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category, pageRequest);
+        return events.getContent().stream().map(event -> mapper.map(event, EventResponse.class)).toList();
     }
 
 
@@ -89,30 +86,6 @@ public class DevEventService implements EventService {
         reservationService.createReservationFor(savedEvent, ticketRequest.getAttendeesCount());
         response.setMessage("Tickets reserved successfully");
         return response;
-    }
-
-//    @Override
-//    public List<EventResponse> findAvailableEventsBy(EventSearchRequest eventSearchRequest) {
-//        Pageable pageable = createPageRequestWith(eventSearchRequest.getPage(), eventSearchRequest.getSize());
-//        eventRepository.findEventByNameLikeOrCategoryOrEventDateBetween()
-//    }
-
-    @Override
-    public List<EventResponse> findAvailableEventsBy(EventSearchRequest eventSearchRequest) {
-        Pageable pageable = createPageRequestWith(eventSearchRequest.getPage(), eventSearchRequest.getSize());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-//        Page<Event> eventPage = eventRepository.findEventByNameLikeOrCategoryOrEventDateBetween(
-//                eventSearchRequest.getName(),
-//                eventSearchRequest.getCategory() != null ? Category.valueOf(eventSearchRequest.getCategory()) : null,
-//                eventSearchRequest.getStartDate() != null ? LocalDate.parse(eventSearchRequest.getStartDate(), formatter).atStartOfDay() : LocalDateTime.now(),
-//                eventSearchRequest.getEndDate() != null ? LocalDate.parse(eventSearchRequest.getEndDate(), formatter).atStartOfDay() : LocalDateTime.now()
-//        );
-
-//        return eventPage.getContent().stream()
-//                .map(event -> mapper.map(event, EventResponse.class))
-//                .toList();
-        return null;
     }
 
     private void reserveTicket(Event foundEvent, int numberOfTickets) {
