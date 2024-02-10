@@ -58,7 +58,6 @@ public class DevReservationService implements ReservationService {
         Pageable pageable = createPageRequestWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findReservationByUser(user, pageable);
         List<ReservationResponse> reservations =  buildReservationResponseFrom(reservationPage);
-        System.out.println(reservations);
         return reservations;
     }
 

@@ -47,7 +47,6 @@ class EventServiceTest {
     }
 
 
-    //TODO: add test cases for edge cases
     @Test
     public void testReserveEvent(){
         TicketRequest ticketRequest = new TicketRequest();
@@ -74,7 +73,6 @@ class EventServiceTest {
     @Test
     void testFindAvailableEventByCategory(){
         List<EventResponse> eventResponses = eventService.searchForEvents(null, null, null, GAME, 1, 10);
-        System.out.println(eventResponses);
         assertNotNull(eventResponses);
         assertThat(eventResponses.size()).isEqualTo(1);
     }
