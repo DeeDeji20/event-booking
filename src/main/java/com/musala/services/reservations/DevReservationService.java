@@ -9,7 +9,6 @@ import com.musala.models.Reservation;
 import com.musala.models.User;
 import com.musala.models.enums.ReservationStatus;
 import com.musala.repositories.ReservationRepository;
-import com.musala.services.events.EventService;
 import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -108,12 +107,4 @@ public class DevReservationService implements ReservationService {
                 .toList();
     }
 
-    private Reservation buildReservation(Event event, long user) {
-        Reservation reservation = Reservation.builder()
-                .user(null)
-                .event(event)
-                .reservationStatus(ReservationStatus.BOOKED)
-                .build();
-        return reservationRepository.save(reservation);
-    }
 }
