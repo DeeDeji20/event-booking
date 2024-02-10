@@ -55,11 +55,12 @@ public class DevEventService implements EventService {
         return mapper.map(savedEvent, EventResponse.class);
     }
 
-//    @Override
-//    public List<EventResponse> findAvailableEventsBy(String criteria, PageRequest pageable) {
-//        Page<Event> eventPage = eventRepository.findEventByParameter(criteria, pageable);
-//        return eventPage.getContent().stream().map(event -> mapper.map(event, EventResponse.class)).toList();
-//    }
+    @Override
+    public List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category) {
+        List<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category);
+        return events.stream().map(event -> mapper.map(event, EventResponse.class)).toList();
+    }
+
 
     @Override
     public EventResponse getEventBy(Long id) {
@@ -101,17 +102,17 @@ public class DevEventService implements EventService {
         Pageable pageable = createPageRequestWith(eventSearchRequest.getPage(), eventSearchRequest.getSize());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        Page<Event> eventPage = eventRepository.findEventByNameLikeOrCategoryOrEventDateBetween(
-                eventSearchRequest.getName(),
-                eventSearchRequest.getCategory() != null ? Category.valueOf(eventSearchRequest.getCategory()) : null,
-                eventSearchRequest.getStartDate() != null ? LocalDate.parse(eventSearchRequest.getStartDate(), formatter).atStartOfDay() : LocalDateTime.now(),
-                eventSearchRequest.getEndDate() != null ? LocalDate.parse(eventSearchRequest.getEndDate(), formatter).atStartOfDay() : LocalDateTime.now(),
-                pageable
-        );
+//        Page<Event> eventPage = eventRepository.findEventByNameLikeOrCategoryOrEventDateBetween(
+//                eventSearchRequest.getName(),
+//                eventSearchRequest.getCategory() != null ? Category.valueOf(eventSearchRequest.getCategory()) : null,
+//                eventSearchRequest.getStartDate() != null ? LocalDate.parse(eventSearchRequest.getStartDate(), formatter).atStartOfDay() : LocalDateTime.now(),
+//                eventSearchRequest.getEndDate() != null ? LocalDate.parse(eventSearchRequest.getEndDate(), formatter).atStartOfDay() : LocalDateTime.now()
+//        );
 
-        return eventPage.getContent().stream()
-                .map(event -> mapper.map(event, EventResponse.class))
-                .toList();
+//        return eventPage.getContent().stream()
+//                .map(event -> mapper.map(event, EventResponse.class))
+//                .toList();
+        return null;
     }
 
     private void reserveTicket(Event foundEvent, int numberOfTickets) {

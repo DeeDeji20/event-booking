@@ -1,4 +1,4 @@
-package com.musala.eventBooking.repositories;
+package com.musala.repository;
 
 import com.musala.models.User;
 import com.musala.models.enums.Authority;

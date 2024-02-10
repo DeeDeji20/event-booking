@@ -41,6 +41,8 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+
+    //TODO Not completed
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<?> findEventByV2(@RequestParam("name") String name,
                                           @RequestParam("start_date") String startDate,

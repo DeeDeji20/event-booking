@@ -42,5 +42,16 @@ public class ReservationControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @Sql(scripts = {"/db/insert.sql"})
+    public void findAllReservations() throws Exception {
+        String authHeader = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwiZXhwIjoxNzA3NjYwNzgxLCJpYXQiOjE3MDc1NzQzODF9.xh37ePeAJwsxPe91l6o9jVsvh0_cwnf1pn9OnwEgoPTevRt1vGYfFmdSm_5l7jtw0Z-2i504hSJX092wURSeFQ";
+        mockMvc.perform(get("/api/v1/reservation?page=1&size=10")
+                        .header(AUTHORIZATION, authHeader))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+    }
+
+
 
 }

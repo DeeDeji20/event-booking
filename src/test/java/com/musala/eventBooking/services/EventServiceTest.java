@@ -7,6 +7,7 @@ import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.User;
 import com.musala.models.enums.Authority;
+import com.musala.models.enums.Category;
 import com.musala.services.events.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static com.musala.models.enums.Category.GAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -92,26 +95,36 @@ class EventServiceTest {
         assertThat(event.getAvailableAttendeesCount()).isEqualTo(numberOfAttendees + ticketRequest.getAttendeesCount());
     }
 
-    @Test//failed
+
+    @Test
+    public void testSearchForEventsByName(){
+        String name = "Game Time";
+        Category category = GAME;
+        List<EventResponse> foundEvents = eventService.searchForEvents(name, null, null, null);
+        assertThat(foundEvents.size()).isEqualTo(1);
+    }
+
+    @Test
     void testFindAvailableEventByCategory(){
-        eventSearchRequest.setCategory("GAME");
-        List<EventResponse> eventResponses = eventService.findAvailableEventsBy(eventSearchRequest);
+        List<EventResponse> eventResponses = eventService.searchForEvents(null, null, null, GAME);
         System.out.println(eventResponses);
         assertNotNull(eventResponses);
-        assertThat(eventResponses.size()).isEqualTo(1L);
+        assertThat(eventResponses.size()).isEqualTo(1);
     }
 
-    @Test//failed
-    void testFindAvailableEventByCategory_caseInsensitive(){
-        eventSearchRequest.setStartDate("2024-03-15");
-        List<EventResponse> eventResponses = eventService.findAvailableEventsBy(eventSearchRequest);
+    @Test
+    void testFindAvailableEventByStartDate(){
+        LocalDateTime start = LocalDateTime.of(2024, 2, 15, 10, 0, 0);
+//        LocalDateTime end = LocalDateTime.of(2024, 2, 16, 10, 0, 0);
+        List<EventResponse> eventResponses = eventService.searchForEvents(null, start, null, null);
         assertNotNull(eventResponses);
-        assertThat(eventResponses.size()).isEqualTo(1L);
+        assertThat(eventResponses.size()).isEqualTo(1);
     }
 
-    @Test//failed
+    @Test
     void testFindAvailableEventsByDate(){
-        List<EventResponse> eventResponses = eventService.findAvailableEventsBy(eventSearchRequest);
+        LocalDateTime end = LocalDateTime.of(2024, 2, 16, 10, 0, 0);
+        List<EventResponse> eventResponses = eventService.searchForEvents(null, null , end, null);
         assertNotNull(eventResponses);
         assertThat(eventResponses.size()).isEqualTo(1L);
     }

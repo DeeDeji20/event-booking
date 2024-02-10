@@ -1,13 +1,11 @@
 package com.musala.services.reservations;
 
 import com.musala.dtos.response.ApiResponse;
-import com.musala.dtos.response.ReservationList;
 import com.musala.dtos.response.ReservationResponse;
 import com.musala.exception.NotFoundException;
 import com.musala.models.Event;
 import com.musala.models.Reservation;
 import com.musala.models.User;
-import com.musala.models.enums.ReservationStatus;
 import com.musala.repositories.ReservationRepository;
 import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
@@ -16,10 +14,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.musala.models.enums.ReservationStatus.CANCELED;
@@ -49,20 +45,11 @@ public class DevReservationService implements ReservationService {
 
     @Cacheable(cacheNames = "cache1", key = "'#key'")
     @Override
-    public ReservationList listReservations(Integer page, Integer size) {
-        System.out.println("HERE");
+    public List<ReservationResponse> listReservations(Integer page, Integer size) {
         PageRequest pageRequest = createPageRequestWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findAll(pageRequest);
-        List<ReservationResponse> reservationResponses = new ArrayList<>();
-        List<Reservation> x = reservationPage.getContent();
-        System.out.println(x);
-        for (Reservation y:x){
-            ReservationResponse response = mapper.map(y, ReservationResponse.class);
-            reservationResponses.add(response);
-        }
-        return new ReservationList(reservationResponses, PageRequest.of(reservationPage.getPageable().getPageNumber(),
-                reservationPage.getPageable().getPageSize(), Sort.Direction.DESC, "id"), reservationPage.getTotalPages()
-                );
+        List<Reservation> reservations = reservationPage.getContent();
+        return reservations.stream().map(reservation -> mapper.map(reservation, ReservationResponse.class)).toList();
     }
 
     @Override

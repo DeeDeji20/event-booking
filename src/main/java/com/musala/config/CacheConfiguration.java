@@ -37,4 +37,5 @@ public class CacheConfiguration {
     public RedisProperties properties(){
         return new RedisProperties();
     }
+
 }

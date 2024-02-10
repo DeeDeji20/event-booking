@@ -6,14 +6,16 @@ import com.musala.dtos.request.TicketRequest;
 import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.User;
+import com.musala.models.enums.Category;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
     EventResponse createEvent(EventCreationRequest eventCreationRequest, String authorizationHeader);
 
-
-//    List<EventResponse> findAvailableEventsBy(String criteria, PageRequest pageable);
+    List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category);
 
     EventResponse getEventBy(Long id);
 

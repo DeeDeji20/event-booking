@@ -31,7 +31,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ValidationMessage ValidationMessagehandleAuthenticationException(Exception ex) {
+    public ValidationMessage ValidationMessageHandleAuthenticationException(Exception ex) {
+        System.out.println("exception: "+ex.getMessage()+" "+ex);
         ValidationMessage errorMessage =
                 new ValidationMessage(new Date(), 0, ex.getMessage());
         return errorMessage;
