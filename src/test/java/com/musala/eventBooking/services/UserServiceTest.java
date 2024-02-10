@@ -1,8 +1,8 @@
 package com.musala.eventBooking.services;
 
-import com.musala.eventBooking.dtos.request.UserRegistrationRequest;
-import com.musala.eventBooking.exception.AppException;
-import com.musala.eventBooking.services.users.UserService;
+import com.musala.dtos.request.UserRegistrationRequest;
+import com.musala.exception.AppException;
+import com.musala.services.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +43,5 @@ class UserServiceTest {
     void testThatUserEmailIsValid(){
         assertThrows(AppException.class,()-> userService.createUser(userRegistrationRequest));
     }
+
 }

@@ -1,7 +1,8 @@
 package com.musala.eventBooking.repositories;
 
-import com.musala.eventBooking.models.User;
-import com.musala.eventBooking.models.enums.Authority;
+import com.musala.models.User;
+import com.musala.models.enums.Authority;
+import com.musala.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest

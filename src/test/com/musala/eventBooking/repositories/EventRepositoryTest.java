@@ -1,6 +1,7 @@
 package com.musala.eventBooking.repositories;
 
-import com.musala.eventBooking.models.Event;
+import com.musala.models.Event;
+import com.musala.repositories.EventRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
