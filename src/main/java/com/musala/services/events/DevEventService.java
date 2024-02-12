@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class DevEventService implements EventService {
     public List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category, Integer page, Integer size) {
         PageRequest pageRequest = createPageRequestWith(page, size);
         Page<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category, pageRequest);
-        return events.getContent().stream().map(event -> mapper.map(event, EventResponse.class)).toList();
+        return buildEventResponses(events.getContent());
     }
 
 
@@ -68,6 +69,11 @@ public class DevEventService implements EventService {
     private Event findEventBy(Long id) {
         return eventRepository
                         .findById(id).orElseThrow(()->new NotFoundException(String.format("Event with id %d not found", id)));
+    }
+
+
+    private List<EventResponse> buildEventResponses(List<Event> events){
+        return events.stream().map(event -> mapper.map(event, EventResponse.class)).toList();
     }
 
     @Override
@@ -86,6 +92,12 @@ public class DevEventService implements EventService {
         reservationService.createReservationFor(savedEvent, ticketRequest.getAttendeesCount());
         response.setMessage("Tickets reserved successfully");
         return response;
+    }
+
+    @Override
+    public List<EventResponse> getAllEventsFor(LocalDate date) {
+        return  buildEventResponses(eventRepository.findEventByEventDate(date));
+
     }
 
     private void reserveTicket(Event foundEvent, int numberOfTickets) {

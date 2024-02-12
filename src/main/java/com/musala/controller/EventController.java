@@ -36,7 +36,8 @@ public class EventController {
     }
 
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
-    private ResponseEntity<?> findEventByCriteria(@RequestParam("name") String name,
+    private ResponseEntity<?> findEventByCriteria(
+                                           @RequestParam("name") String name,
                                           @RequestParam("start_date") LocalDateTime startDate,
                                           @RequestParam("end_date") LocalDateTime endDate,
                                           @RequestParam("end_date") Category category,

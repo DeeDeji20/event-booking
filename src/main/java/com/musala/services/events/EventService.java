@@ -6,6 +6,7 @@ import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.enums.Category;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface EventService {
     EventResponse getEventBy(Long id);
 
     TicketResponse bookEvent(Long eventId, TicketRequest ticketRequest);
+
+
+    List<EventResponse> getAllEventsFor(LocalDate date);
 }

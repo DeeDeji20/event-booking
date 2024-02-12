@@ -1,4 +1,4 @@
-package com.musala.repository;
+package com.musala.repositories;
 
 import com.musala.models.User;
 import com.musala.models.enums.Authority;

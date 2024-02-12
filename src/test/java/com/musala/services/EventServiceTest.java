@@ -1,10 +1,11 @@
-package com.musala.eventBooking.services;
+package com.musala.services;
 
 import com.musala.dtos.request.EventCreationRequest;
 import com.musala.dtos.request.TicketRequest;
 import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.enums.Category;
+import com.musala.security.services.JwtService;
 import com.musala.services.events.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,6 +29,8 @@ class EventServiceTest {
 
     @Autowired
     private EventService eventService;
+    @Autowired
+    private JwtService jwtService;
 
     @BeforeEach
     void setup(){
@@ -41,7 +45,7 @@ class EventServiceTest {
 
     @Test
     void testCreateEvent() {
-        String authHeader = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwiZXhwIjoxNzA3NjYwNzgxLCJpYXQiOjE3MDc1NzQzODF9.xh37ePeAJwsxPe91l6o9jVsvh0_cwnf1pn9OnwEgoPTevRt1vGYfFmdSm_5l7jtw0Z-2i504hSJX092wURSeFQ";
+        String authHeader = jwtService.generateTokenFor("test@email.com");
         EventResponse response = eventService.createEvent(eventCreationRequest, authHeader);
         assertNotNull(response);
     }
@@ -91,6 +95,12 @@ class EventServiceTest {
         EventResponse event = eventService.getEventBy(1L);
         assertThat(event).isNotNull();
 
+    }
+
+    @Test
+    public void testFetEventByDay(){
+        List<EventResponse> events = eventService.getAllEventsFor(LocalDate.of(2024, 2, 15));
+        assertThat(events.size()).isEqualTo(1);
     }
 
 

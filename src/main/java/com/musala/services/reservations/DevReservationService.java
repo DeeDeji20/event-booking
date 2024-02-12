@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.musala.models.enums.ReservationStatus.BOOKED;
 import static com.musala.models.enums.ReservationStatus.CANCELED;
 import static com.musala.util.AppUtil.createPageRequestWith;
 
@@ -64,6 +65,11 @@ public class DevReservationService implements ReservationService {
     @Override
     public ReservationResponse getReservationBy(Long id) {
         return mapper.map(findBy(id), ReservationResponse.class);
+    }
+
+    @Override
+    public List<Reservation> getReservationsFor(Event event) {
+        return reservationRepository.findReservationByEventAndReservationStatus(event, BOOKED);
     }
 
     private Reservation findBy(Long id){

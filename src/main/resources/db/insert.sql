@@ -7,7 +7,7 @@ insert into event (id, name, category, event_status, max_attendees_count, declin
 
 
 insert into reservation (id, event_id, user_id, reservation_status, ticket_count) values
-(100, 5, 1, 'BOOKED', 4),
+(100, 1, 1, 'BOOKED', 4),
 (101, 6, 1, 'BOOKED', 1),
 (103, 5, 1, 'BOOKED', 3),
 (104, 8, 1, 'BOOKED', 5),

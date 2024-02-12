@@ -20,8 +20,6 @@ public class DevUserService implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     @Override
     public String createUser(UserRegistrationRequest userRegistrationRequest) {
-        User foundUser = findUserBy(userRegistrationRequest.getEmail());
-        if (foundUser != null) throw new AppException(String.format("User with email %s already exists", foundUser.getEmail()));
         User user = User.builder()
                 .name(userRegistrationRequest.getName())
                 .email(userRegistrationRequest.getEmail())

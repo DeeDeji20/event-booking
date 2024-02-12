@@ -25,8 +25,8 @@ public class Event {
     private String name;
     @NotNull
     private LocalDateTime eventDate;
-    private Integer maxAttendeesCount;
-    private Integer availableAttendeesCount;
+    private int maxAttendeesCount;
+    private int availableAttendeesCount;
 //    @Size(max = 500)
     private String description;
     @NotNull

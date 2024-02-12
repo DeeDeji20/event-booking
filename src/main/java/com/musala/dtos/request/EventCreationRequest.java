@@ -15,7 +15,7 @@ public class EventCreationRequest {
     private String name;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime date;
-    private Integer availableAttendeesCount;
+    private int availableAttendeesCount;
     private String description;
     private String category;
 }

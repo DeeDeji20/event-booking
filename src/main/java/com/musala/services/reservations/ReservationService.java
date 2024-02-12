@@ -4,6 +4,7 @@ package com.musala.services.reservations;
 import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.ReservationResponse;
 import com.musala.models.Event;
+import com.musala.models.Reservation;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface ReservationService {
     ReservationResponse getReservationBy(Long id);
 
 
-
+    List<Reservation> getReservationsFor(Event event);
 }
