@@ -11,6 +11,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class EventNotificationCron {
@@ -32,32 +34,31 @@ public class EventNotificationCron {
     private ModelMapper modelMapper;
     private final NotificationService notificationService;
     private final Configuration freemarkerConfig;
-    @Scheduled(cron = "* * * * * *") // Runs every mid-night
+    @Scheduled(cron = "0 0 0 * * *") // Runs every mid-night
     public void sendEventNotifications() {
-        System.out.println("In the cron.....");
+        log.info("::::::::SCHEDULER STARTED::::::::");
         List<EventResponse> upcomingEvents = eventService.getAllEventsFor(LocalDate.now());
         System.out.println(upcomingEvents);
         upcomingEvents.forEach(
                 eventResponse -> {
                     List<Reservation> reservations = reservationService.getReservationsFor(modelMapper.map(eventResponse, Event.class));
                     reservations
-                            .forEach(reservation -> {
-                                System.out.println("Reservation --->"+ reservation);
-                                User user = reservation.getUser();
-                                try {
-                                    Template template = freemarkerConfig.getTemplate("notification.ftlh");
-                                    String processedHtml =
-                                                        FreeMarkerTemplateUtils
-                                                            .processTemplateIntoString(template,
-                                                                prepareModel(user.getName(), reservation.getEvent().getEventDate()));
-                                    EmailNotificationRequest emailNotificationRequest = new EmailNotificationRequest(user.getEmail(), processedHtml);
-                                    notificationService.sendHtmlEmail(emailNotificationRequest);
-                                    System.out.println("DONE");
-                                } catch (IOException | TemplateException e) {
-                                    throw new RuntimeException(e);
-                                }
+                        .forEach(reservation -> {
+                            User user = reservation.getUser();
+                            try {
+                                Template template = freemarkerConfig.getTemplate("notification.ftlh");
+                                String processedHtml =
+                                                    FreeMarkerTemplateUtils
+                                                        .processTemplateIntoString(template,
+                                                            prepareModel(user.getName(), reservation.getEvent().getEventDate()));
+                                EmailNotificationRequest emailNotificationRequest = new EmailNotificationRequest(user.getEmail(), processedHtml);
+                                notificationService.sendHtmlEmail(emailNotificationRequest);
+                                log.info("::::::::DONE::::::::");
+                            } catch (IOException | TemplateException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                            });
+                        });
                 }
         );
 
