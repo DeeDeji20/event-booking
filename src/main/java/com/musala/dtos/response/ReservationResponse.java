@@ -20,9 +20,10 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReservationResponse implements Serializable {
     private Long id;
-    private EventResponse event;
+    private Integer ticketCount;
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
+    private EventResponse event;
 }

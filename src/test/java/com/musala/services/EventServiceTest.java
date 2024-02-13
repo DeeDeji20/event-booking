@@ -2,6 +2,7 @@ package com.musala.services;
 
 import com.musala.dtos.request.EventCreationRequest;
 import com.musala.dtos.request.TicketRequest;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.enums.Category;
@@ -46,7 +47,7 @@ class EventServiceTest {
     @Test
     void testCreateEvent() {
         String authHeader = jwtService.generateTokenFor("test@email.com");
-        EventResponse response = eventService.createEvent(eventCreationRequest, authHeader);
+        ApiResponse<EventResponse> response = eventService.createEvent(eventCreationRequest, authHeader);
         assertNotNull(response);
     }
 
@@ -57,7 +58,7 @@ class EventServiceTest {
         ticketRequest.setAttendeesCount(10);
         EventResponse event = eventService.getEventBy(1L);
         int numberOfAttendees = event.getAvailableAttendeesCount();
-        TicketResponse ticketResponse = eventService.bookEvent(1L, ticketRequest);
+        ApiResponse<TicketResponse> ticketResponse = eventService.bookEvent(1L, ticketRequest);
         assertThat(ticketResponse).isNotNull();
 
         event = eventService.getEventBy(1L);
@@ -70,24 +71,24 @@ class EventServiceTest {
     public void testSearchForEventsByName(){
         String name = "Game Time";
         Category category = GAME;
-        List<EventResponse> foundEvents = eventService.searchForEvents(name, null, null, null, 1, 10);
-        assertThat(foundEvents.size()).isEqualTo(1);
+        ApiResponse<List<EventResponse>> foundEvents = eventService.searchForEvents(name, null, null, null, 1, 10);
+        assertThat(foundEvents.getData().size()).isEqualTo(1);
     }
 
     @Test
     void testFindAvailableEventByCategory(){
-        List<EventResponse> eventResponses = eventService.searchForEvents(null, null, null, GAME, 1, 10);
+        ApiResponse<List<EventResponse>> eventResponses = eventService.searchForEvents(null, null, null, GAME, 1, 10);
         assertNotNull(eventResponses);
-        assertThat(eventResponses.size()).isEqualTo(1);
+        assertThat(eventResponses.getData().size()).isEqualTo(1);
     }
 
     @Test
     void testFindAvailableEventByStartDateAndEndDate(){
         LocalDateTime start = LocalDateTime.of(2024, 2, 15, 10, 0, 0);
         LocalDateTime end = LocalDateTime.of(2024, 2, 16, 10, 0, 0);
-        List<EventResponse> eventResponses = eventService.searchForEvents(null, start, end, null, 1, 10);
+        ApiResponse<List<EventResponse>> eventResponses = eventService.searchForEvents(null, start, end, null, 1, 10);
         assertNotNull(eventResponses);
-        assertThat(eventResponses.size()).isEqualTo(1);
+        assertThat(eventResponses.getData().size()).isEqualTo(1);
     }
 
     @Test

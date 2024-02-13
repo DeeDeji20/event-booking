@@ -1,9 +1,8 @@
 package com.musala.services.users;
 
 import com.musala.dtos.request.UserRegistrationRequest;
-import com.musala.exception.AppException;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.models.User;
-import com.musala.models.enums.Authority;
 import com.musala.repositories.UserRepository;
 import com.musala.security.models.Principal;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class DevUserService implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
-    public String createUser(UserRegistrationRequest userRegistrationRequest) {
+    public ApiResponse<String> createUser(UserRegistrationRequest userRegistrationRequest) {
         User user = User.builder()
                 .name(userRegistrationRequest.getName())
                 .email(userRegistrationRequest.getEmail())
@@ -32,7 +31,7 @@ public class DevUserService implements UserService, UserDetailsService {
                 .authorities(Set.of(USER))
                 .build();
         userRepository.save(user);
-        return "User Created Successfully";
+        return new ApiResponse<>("User Created Successfully");
     }
 
     @Override

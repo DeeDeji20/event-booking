@@ -21,5 +21,6 @@ public class EventResponse {
     private Category category;
     private UserResponse createdBy;
     private LocalDateTime eventDate;
+//    private int currentNumberOfAttendees;
     private Integer availableAttendeesCount;
 }

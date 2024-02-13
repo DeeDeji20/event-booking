@@ -2,6 +2,7 @@ package com.musala.services.events;
 
 import com.musala.dtos.request.EventCreationRequest;
 import com.musala.dtos.request.TicketRequest;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.exception.AppException;
@@ -40,7 +41,7 @@ public class DevEventService implements EventService {
     private final ModelMapper mapper;
 
     @Override
-    public EventResponse createEvent(EventCreationRequest eventCreationRequest, String authorizationHeader) {
+    public ApiResponse<EventResponse> createEvent(EventCreationRequest eventCreationRequest, String authorizationHeader) {
         String token = authorizationHeader.substring("Bearer ".length());
         UserDetails userDetails = jwtService.extractUserDetailsFrom(token);
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -49,14 +50,16 @@ public class DevEventService implements EventService {
         event.setEventStatus(UPCOMING);
         event.setCreatedBy(user);
         Event savedEvent = eventRepository.save(event);
-        return mapper.map(savedEvent, EventResponse.class);
+        var eventResponse = mapper.map(savedEvent, EventResponse.class);
+        return new ApiResponse<>(eventResponse);
     }
 
     @Override
-    public List<EventResponse> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category, Integer page, Integer size) {
+    public ApiResponse<List<EventResponse>> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category, Integer page, Integer size) {
         PageRequest pageRequest = createPageRequestWith(page, size);
         Page<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category, pageRequest);
-        return buildEventResponses(events.getContent());
+         List<EventResponse> eventResponses = buildEventResponses(events.getContent());
+         return new ApiResponse<>(eventResponses);
     }
 
 
@@ -77,7 +80,7 @@ public class DevEventService implements EventService {
     }
 
     @Override
-    public TicketResponse bookEvent(Long eventId, TicketRequest ticketRequest) {
+    public ApiResponse<TicketResponse> bookEvent(Long eventId, TicketRequest ticketRequest) {
         Event foundEvent = findEventBy(eventId);
         int numberOfTickets = ticketRequest.getAttendeesCount();
         TicketResponse response = new TicketResponse();
@@ -91,7 +94,7 @@ public class DevEventService implements EventService {
         Event savedEvent = eventRepository.save(foundEvent);
         reservationService.createReservationFor(savedEvent, ticketRequest.getAttendeesCount());
         response.setMessage("Tickets reserved successfully");
-        return response;
+        return new ApiResponse<>(response);
     }
 
     @Override

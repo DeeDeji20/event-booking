@@ -12,10 +12,10 @@ public interface ReservationService {
 
     void createReservationFor(Event event, int ticketCount);
 
-    List<ReservationResponse> listReservations(Integer page, Integer size);
+    ApiResponse<List<ReservationResponse>>  listReservations(Integer page, Integer size);
 
 
-    List<ReservationResponse> viewBookedEvent(String email, Integer page, Integer size);
+    ApiResponse<List<ReservationResponse>> viewBookedEvent(String email, Integer page, Integer size);
 
     ApiResponse<ReservationResponse> cancelReservation(Long id);
 

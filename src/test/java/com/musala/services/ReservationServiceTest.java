@@ -46,8 +46,8 @@ class ReservationServiceTest {
     @Test
     @Sql(scripts = {"/db/insert.sql"})
     void testToViewUsersBookedEvent(){
-        List<ReservationResponse> response =reservationService.viewBookedEvent("test@email.com", 1, 15);
-        assertThat(response.size()).isEqualTo(5L);
+        ApiResponse<List<ReservationResponse>> response =reservationService.viewBookedEvent("test@email.com", 1, 15);
+        assertThat(response.getData().size()).isEqualTo(5L);
     }
 
     @Test

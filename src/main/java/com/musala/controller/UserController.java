@@ -1,6 +1,7 @@
 package com.musala.controller;
 
 import com.musala.dtos.request.UserRegistrationRequest;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.services.users.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest userRegistrationRequest){
-        String response = userService.createUser(userRegistrationRequest);
+        ApiResponse<String> response = userService.createUser(userRegistrationRequest);
         return ResponseEntity.ok(response);
     }
 

@@ -52,8 +52,8 @@ public class EventNotificationCron {
                                                         .processTemplateIntoString(template,
                                                             prepareModel(user.getName(), reservation.getEvent().getEventDate()));
                                 EmailNotificationRequest emailNotificationRequest = new EmailNotificationRequest(user.getEmail(), processedHtml);
-                                notificationService.sendHtmlEmail(emailNotificationRequest);
-                                log.info("::::::::DONE::::::::");
+                                String message = notificationService.sendHtmlEmail(emailNotificationRequest);
+                                log.info("::::::::DONE:::::::: {}", message);
                             } catch (IOException | TemplateException e) {
                                 throw new RuntimeException(e);
                             }

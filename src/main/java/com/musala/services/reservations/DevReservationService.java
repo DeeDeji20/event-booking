@@ -41,24 +41,26 @@ public class DevReservationService implements ReservationService {
         reservation.setUser(event.getCreatedBy());
         reservation.setUpdatedAt(event.getCreatedAt());
         reservation.setTicketCount(ticketCount);
+        reservation.setReservationStatus(BOOKED);
         reservationRepository.save(reservation);
     }
 
     @Cacheable(cacheNames = "cache1", key = "'#key'")
     @Override
-    public List<ReservationResponse> listReservations(Integer page, Integer size) {
+    public ApiResponse<List<ReservationResponse>> listReservations(Integer page, Integer size) {
         PageRequest pageRequest = createPageRequestWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findAll(pageRequest);
-        List<Reservation> reservations = reservationPage.getContent();
-        return reservations.stream().map(reservation -> mapper.map(reservation, ReservationResponse.class)).toList();
+        List<ReservationResponse> reservationResponses = buildReservationResponseFrom(reservationPage);
+        return new ApiResponse<>(reservationResponses);
     }
 
     @Override
-    public List<ReservationResponse> viewBookedEvent(String email, Integer page, Integer size) {
+    public ApiResponse<List<ReservationResponse>> viewBookedEvent(String email, Integer page, Integer size) {
         User user = userService.getUserByEmail(email);
         Pageable pageable = createPageRequestWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findReservationByUserV2(user, pageable);
-        return buildReservationResponseFrom(reservationPage);
+        List<ReservationResponse > reservationList= buildReservationResponseFrom(reservationPage);
+        return new ApiResponse<>(reservationList);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class DevReservationService implements ReservationService {
                 String.format("Reservation with id %d not found", id)));
 
         Event event = foundReservation.getEvent();
-        event.setAvailableAttendeesCount(event.getAvailableAttendeesCount() - foundReservation.getTicketCount());
+        event.setCurrentNumberOfAttendees(event.getCurrentNumberOfAttendees() - foundReservation.getTicketCount());
         foundReservation.setReservationStatus(CANCELED);
         Reservation savedReservation = reservationRepository.save(foundReservation);
         return new ApiResponse<>(mapper.map(savedReservation, ReservationResponse.class));
