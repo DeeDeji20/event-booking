@@ -57,9 +57,8 @@ public class DevReservationService implements ReservationService {
     public List<ReservationResponse> viewBookedEvent(String email, Integer page, Integer size) {
         User user = userService.getUserByEmail(email);
         Pageable pageable = createPageRequestWith(page, size);
-        Page<Reservation> reservationPage = reservationRepository.findReservationByUser(user, pageable);
-        List<ReservationResponse> reservations =  buildReservationResponseFrom(reservationPage);
-        return reservations;
+        Page<Reservation> reservationPage = reservationRepository.findReservationByUserV2(user, pageable);
+        return buildReservationResponseFrom(reservationPage);
     }
 
     @Override

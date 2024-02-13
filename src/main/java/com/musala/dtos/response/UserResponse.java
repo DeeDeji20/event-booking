@@ -1,5 +1,6 @@
 package com.musala.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musala.models.enums.Authority;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
     private Long id;
     private String name;

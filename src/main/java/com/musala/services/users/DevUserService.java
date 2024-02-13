@@ -3,6 +3,7 @@ package com.musala.services.users;
 import com.musala.dtos.request.UserRegistrationRequest;
 import com.musala.exception.AppException;
 import com.musala.models.User;
+import com.musala.models.enums.Authority;
 import com.musala.repositories.UserRepository;
 import com.musala.security.models.Principal;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
+import static com.musala.models.enums.Authority.USER;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +29,7 @@ public class DevUserService implements UserService, UserDetailsService {
                 .name(userRegistrationRequest.getName())
                 .email(userRegistrationRequest.getEmail())
                 .password(passwordEncoder.encode(userRegistrationRequest.getPassword()))
+                .authorities(Set.of(USER))
                 .build();
         userRepository.save(user);
         return "User Created Successfully";

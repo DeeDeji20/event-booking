@@ -6,6 +6,7 @@ import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.enums.Category;
 import com.musala.services.events.EventService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,13 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public ResponseEntity<EventResponse> createEvent(@RequestBody EventCreationRequest eventCreationRequest, @RequestHeader(name = AUTHORIZATION) String authorizationHeader){
+    public ResponseEntity<EventResponse> createEvent(@Valid @RequestBody EventCreationRequest eventCreationRequest, @RequestHeader(name = AUTHORIZATION) String authorizationHeader){
         EventResponse response = eventService.createEvent(eventCreationRequest, authorizationHeader);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{eventId}/tickets")
-    public ResponseEntity<?> reserveTicket(@RequestBody TicketRequest ticketRequest, @PathVariable Long eventId){
+    public ResponseEntity<?> reserveTicket(@Valid @RequestBody TicketRequest ticketRequest, @PathVariable Long eventId){
         TicketResponse response = eventService.bookEvent(eventId, ticketRequest);
         return ResponseEntity.ok(response);
     }

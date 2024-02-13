@@ -1,5 +1,6 @@
 package com.musala.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musala.models.enums.Category;
 import com.musala.models.enums.EventStatus;
 import com.musala.models.enums.ReservationStatus;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventReservationResponse {
     private Long reservationId;
     private String name;

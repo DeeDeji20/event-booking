@@ -82,9 +82,9 @@ public class DevEventService implements EventService {
         int numberOfTickets = ticketRequest.getAttendeesCount();
         TicketResponse response = new TicketResponse();
         if (foundEvent.getEventDate().isBefore(LocalDateTime.now())) throw new AppException("Event already happened");
-        int projected = foundEvent.getAvailableAttendeesCount() + ticketRequest.getAttendeesCount();
-        if (foundEvent.getMaxAttendeesCount() < projected) {
-            numberOfTickets = ticketRequest.getAttendeesCount() - (projected - foundEvent.getMaxAttendeesCount());
+        int projected = foundEvent.getCurrentNumberOfAttendees() + ticketRequest.getAttendeesCount();
+        if (foundEvent.getAvailableAttendeesCount() < projected) {
+            numberOfTickets = ticketRequest.getAttendeesCount() - (projected - foundEvent.getCurrentNumberOfAttendees());
             response.setMessage("System was only able to reserve "+ numberOfTickets +"slots for you as there were only that many slots left");
         }
         reserveTicket(foundEvent, numberOfTickets);
@@ -101,6 +101,6 @@ public class DevEventService implements EventService {
     }
 
     private void reserveTicket(Event foundEvent, int numberOfTickets) {
-        foundEvent.setAvailableAttendeesCount(foundEvent.getAvailableAttendeesCount() + numberOfTickets);
+        foundEvent.setCurrentNumberOfAttendees(foundEvent.getCurrentNumberOfAttendees()+numberOfTickets);
     }
 }

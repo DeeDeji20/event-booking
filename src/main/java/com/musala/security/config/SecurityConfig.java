@@ -33,7 +33,7 @@ public class SecurityConfig {
                    .sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                    .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
                    .addFilterBefore(authorizationFilter, DevEventAuthenticationFilter.class)
-                   .authorizeHttpRequests(c->c.requestMatchers("/auth/login").permitAll())
+                   .authorizeHttpRequests(c->c.requestMatchers("/auth/login", "/users").permitAll())
                    .authorizeHttpRequests(c->c.requestMatchers(GET, "/api/v1/reservation").hasAnyAuthority(USER.name()))
                    .authorizeHttpRequests(c->c.anyRequest().hasAnyAuthority(USER.name()))
                    .build();

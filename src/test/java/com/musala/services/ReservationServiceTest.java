@@ -1,9 +1,7 @@
 package com.musala.services;
 
 import com.musala.dtos.response.ApiResponse;
-import com.musala.dtos.response.EventReservationResponse;
 import com.musala.dtos.response.ReservationResponse;
-import com.musala.exception.ConflictException;
 import com.musala.models.Event;
 import com.musala.models.Reservation;
 import com.musala.models.User;
@@ -23,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ReservationServiceTest {
@@ -73,7 +70,7 @@ class ReservationServiceTest {
         event.setEventStatus(EventStatus.ACTIVE);
         event.setCategory(Category.GAME);
         event.setName("dev games");
-        event.setMaxAttendeesCount(100);
+        event.setCurrentNumberOfAttendees(100);
         event.setDeclinedCount(0);
         List<Reservation> list = reservationService.getReservationsFor(event);
         assertThat(list).isNotNull();

@@ -27,7 +27,8 @@ public class ReservationController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<?> findUsersReservations(@PathVariable String email,
+    public ResponseEntity<?> findUsersReservations(
+            @PathVariable String email,
             @RequestParam(name = "page", value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size",value = "size", required = false, defaultValue = "25") Integer size){
         return ResponseEntity.ok(reservationService.viewBookedEvent(email, page, size));

@@ -21,13 +21,11 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @Size(max = 100)
     private String name;
     @NotNull
     private LocalDateTime eventDate;
-    private int maxAttendeesCount;
+    private int currentNumberOfAttendees;
     private int availableAttendeesCount;
-//    @Size(max = 500)
     private String description;
     @NotNull
     @Enumerated(EnumType.STRING)

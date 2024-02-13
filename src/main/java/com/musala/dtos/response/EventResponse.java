@@ -1,5 +1,6 @@
 package com.musala.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.musala.models.enums.Category;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventResponse {
     private Long id;
     private String name;
