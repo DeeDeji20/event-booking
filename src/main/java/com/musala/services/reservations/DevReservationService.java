@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.musala.exception.ExceptionMessages.RESERVATION_NOT_FOUND;
 import static com.musala.models.enums.ReservationStatus.BOOKED;
 import static com.musala.models.enums.ReservationStatus.CANCELED;
 import static com.musala.util.AppUtil.createPageRequestWith;
@@ -76,13 +77,13 @@ public class DevReservationService implements ReservationService {
     private Reservation findBy(Long id){
         return reservationRepository.findById(id)
                 .orElseThrow(()->new NotFoundException(
-                        String.format("Reservation with id %d not found", id)));
+                        String.format(RESERVATION_NOT_FOUND.getMessage(), id)));
     }
 
     @Override
     public ApiResponse<ReservationResponse> cancelReservation(Long id) {
         Reservation foundReservation = reservationRepository.findById(id).orElseThrow(()->new NotFoundException(
-                String.format("Reservation with id %d not found", id)));
+                String.format(RESERVATION_NOT_FOUND.getMessage(), id)));
 
         Event event = foundReservation.getEvent();
         event.setCurrentNumberOfAttendees(event.getCurrentNumberOfAttendees() - foundReservation.getTicketCount());

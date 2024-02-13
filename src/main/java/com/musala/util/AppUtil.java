@@ -14,6 +14,7 @@ public class AppUtil {
     public static final String TIME = "time";
     public static final String NOTIFICATION_TEMPLATE = "notification.ftlh";
     public static final String NO_REPLY = "no-reply@email.com";
+    public static final String USER_CREATED_SUCCESSFULLY = "User Created Successfully";
     public static final String RESERVED_SUCCESSFULLY = "Tickets reserved successfully";
     public static final String EMAIL_SENT_SUCCESSFULLY = "email sent to %s successfully";
     public static final String EMAIL_NOT_SENT_SUCCESSFULLY = "email not sent to %s";

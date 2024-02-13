@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+import static com.musala.exception.ExceptionMessages.USER_NOT_FOUND;
 import static com.musala.models.enums.Authority.USER;
+import static com.musala.util.AppUtil.USER_CREATED_SUCCESSFULLY;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +33,7 @@ public class DevUserService implements UserService, UserDetailsService {
                 .authorities(Set.of(USER))
                 .build();
         userRepository.save(user);
-        return new ApiResponse<>("User Created Successfully");
+        return new ApiResponse<>(USER_CREATED_SUCCESSFULLY);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class DevUserService implements UserService, UserDetailsService {
 
     private User findUserBy(String email){
         return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(
-                String.format("user with email %s does not exist", email)
+                String.format(USER_NOT_FOUND.getMessage(), email)
         ));
 
     }
