@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.musala.util.AppUtil.AUTHENTICATION_FAILURE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
@@ -66,12 +67,11 @@ public class DevEventAuthenticationFilter extends UsernamePasswordAuthentication
     }
 
     private static LoginRequest extractAuthenticationCredentialsFrom(HttpServletRequest request) {
-        //TODO: remove hardcoded values
         try(InputStream inputStream = request.getInputStream()){
             byte[] requestBody =  inputStream.readAllBytes();
             return mapper.readValue(requestBody, LoginRequest.class);
         }catch (IOException exception){
-            throw new BadCredentialsException("Failed to extract authentication credentials");
+            throw new BadCredentialsException(AUTHENTICATION_FAILURE);
         }
     }
 }

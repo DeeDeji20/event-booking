@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import static com.musala.util.AppUtil.*;
+
 @Service
 @AllArgsConstructor
 public class EventNotificationService implements NotificationService{
@@ -19,14 +21,14 @@ public class EventNotificationService implements NotificationService{
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try{
-            mimeMessageHelper.setFrom("no-reply@email.com");
+            mimeMessageHelper.setFrom(NO_REPLY);
             mimeMessageHelper.setTo(emailNotificationRequest.getUserEmail());
             mimeMessageHelper.setText(emailNotificationRequest.getContent(), true);
             javaMailSender.send(mimeMessage);
-            return String.format("email sent to %s successfully", emailNotificationRequest.getUserEmail());
+            return String.format(EMAIL_SENT_SUCCESSFULLY, emailNotificationRequest.getUserEmail());
         }catch (MessagingException exception){
             exception.printStackTrace();;
         }
-        return String.format("email not sent to %s", emailNotificationRequest.getUserEmail());
+        return String.format(EMAIL_NOT_SENT_SUCCESSFULLY, emailNotificationRequest.getUserEmail());
     }
 }

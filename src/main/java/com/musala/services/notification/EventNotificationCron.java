@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.musala.util.AppUtil.*;
+
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -46,7 +48,7 @@ public class EventNotificationCron {
                         .forEach(reservation -> {
                             User user = reservation.getUser();
                             try {
-                                Template template = freemarkerConfig.getTemplate("notification.ftlh");
+                                Template template = freemarkerConfig.getTemplate(NOTIFICATION_TEMPLATE);
                                 String processedHtml =
                                                     FreeMarkerTemplateUtils
                                                         .processTemplateIntoString(template,
@@ -65,12 +67,12 @@ public class EventNotificationCron {
     }
 
     private Map<String, Object> prepareModel(String name, LocalDateTime date) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
         String formattedTime = date.format(timeFormatter);
         Map<String, Object> model = new HashMap<>();
-        model.put("name", name);
-        model.put("date", date.toLocalDate());
-        model.put("time", formattedTime);
+        model.put(NAME, name);
+        model.put(DATE, date.toLocalDate());
+        model.put(TIME, formattedTime);
         return model;
     }
 }

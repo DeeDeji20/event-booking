@@ -26,8 +26,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.musala.exception.ExceptionMessages.EVENT_HAS_ENDED;
+import static com.musala.exception.ExceptionMessages.EVENT_NOT_FOUND;
 import static com.musala.models.enums.EventStatus.UPCOMING;
-import static com.musala.util.AppUtil.createPageRequestWith;
+import static com.musala.util.AppUtil.*;
 
 @Service
 @AllArgsConstructor
@@ -71,7 +73,7 @@ public class DevEventService implements EventService {
 
     private Event findEventBy(Long id) {
         return eventRepository
-                        .findById(id).orElseThrow(()->new NotFoundException(String.format("Event with id %d not found", id)));
+                        .findById(id).orElseThrow(()->new NotFoundException(String.format(EVENT_NOT_FOUND.getMessage(), id)));
     }
 
 
@@ -84,16 +86,16 @@ public class DevEventService implements EventService {
         Event foundEvent = findEventBy(eventId);
         int numberOfTickets = ticketRequest.getAttendeesCount();
         TicketResponse response = new TicketResponse();
-        if (foundEvent.getEventDate().isBefore(LocalDateTime.now())) throw new AppException("Event already happened");
+        if (foundEvent.getEventDate().isBefore(LocalDateTime.now())) throw new AppException(EVENT_HAS_ENDED.getMessage());
         int projected = foundEvent.getCurrentNumberOfAttendees() + ticketRequest.getAttendeesCount();
         if (foundEvent.getAvailableAttendeesCount() < projected) {
             numberOfTickets = ticketRequest.getAttendeesCount() - (projected - foundEvent.getCurrentNumberOfAttendees());
-            response.setMessage("System was only able to reserve "+ numberOfTickets +"slots for you as there were only that many slots left");
+            response.setMessage(String.format(AVAILABLE_RESERVATION_SLOT_MESSAGE, numberOfTickets));
         }
         reserveTicket(foundEvent, numberOfTickets);
         Event savedEvent = eventRepository.save(foundEvent);
         reservationService.createReservationFor(savedEvent, ticketRequest.getAttendeesCount());
-        response.setMessage("Tickets reserved successfully");
+        response.setMessage(RESERVED_SUCCESSFULLY);
         return new ApiResponse<>(response);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static com.musala.util.AppUtil.EMAIL;
 import static java.time.Instant.now;
 
 
@@ -17,11 +18,14 @@ import static java.time.Instant.now;
 @AllArgsConstructor
 public class DevEventJwtService implements JwtService{
     private final UserDetailsService userDetailsService;
+
+//    @Value("secret.key")
+//    private static String SECRET;
     @Override
     public String generateTokenFor(String  email) {
         //TODO: remove hardcoded values
         return JWT.create()
-                  .withClaim("email", email)
+                  .withClaim(EMAIL, email)
                   .withExpiresAt(now().plusSeconds(86400))
                   .withIssuedAt(now())
                   .sign(HMAC512("secret"));
@@ -30,11 +34,11 @@ public class DevEventJwtService implements JwtService{
     @Override
     public UserDetails extractUserDetailsFrom(String token) {
         JWTVerifier verifier = JWT.require(HMAC512("secret"))
-                .withClaimPresence("email")
+                .withClaimPresence(EMAIL)
                 .build();
 
         DecodedJWT decodedJWT = verifier.verify(token);
-        Claim claim = decodedJWT.getClaim("email");
+        Claim claim = decodedJWT.getClaim(EMAIL);
         String email = claim.asString();
         return userDetailsService.loadUserByUsername(email);
     }
