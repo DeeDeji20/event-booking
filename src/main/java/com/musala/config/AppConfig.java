@@ -1,17 +1,22 @@
-package com.musala.bootstrap;
+package com.musala.config;
 
 import freemarker.cache.FileTemplateLoader;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.IOException;
 
 
 @Configuration
+@AllArgsConstructor
 public class AppConfig {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public ModelMapper modelMapper(){
@@ -26,5 +31,10 @@ public class AppConfig {
         config.setTemplateLoader(fileTemplateLoader);
         return config;
     }
+
+
+
+
+
 
 }

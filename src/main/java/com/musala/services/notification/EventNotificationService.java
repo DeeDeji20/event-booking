@@ -1,6 +1,8 @@
 package com.musala.services.notification;
 
 import com.musala.dtos.request.EmailNotificationRequest;
+import com.musala.models.Notification;
+import com.musala.repositories.NotificationRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import static com.musala.util.AppUtil.*;
 public class EventNotificationService implements NotificationService{
 
     private final JavaMailSender javaMailSender;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public String sendHtmlEmail(EmailNotificationRequest emailNotificationRequest) {
@@ -30,5 +33,10 @@ public class EventNotificationService implements NotificationService{
             exception.printStackTrace();;
         }
         return String.format(EMAIL_NOT_SENT_SUCCESSFULLY, emailNotificationRequest.getUserEmail());
+    }
+
+    @Override
+    public void createNotification(Notification notification) {
+        notificationRepository.save(notification);
     }
 }

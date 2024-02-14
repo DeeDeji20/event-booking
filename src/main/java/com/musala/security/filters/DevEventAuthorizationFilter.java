@@ -20,7 +20,6 @@ import java.util.Collection;
 import static com.musala.security.SecurityUtils.getAuthenticationWhiteList;
 
 
-@Component
 @AllArgsConstructor
 public class DevEventAuthorizationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;

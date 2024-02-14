@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +58,8 @@ public class DevEventService implements EventService {
 
     @Override
     public ApiResponse<List<EventResponse>> searchForEvents(String name, LocalDateTime startDate, LocalDateTime endDate, Category category, Integer page, Integer size) {
-        PageRequest pageRequest = createPageRequestWith(page, size);
-        Page<Event> events = eventRepository.findByNameOrEventDateBetweenOrCategory(name, startDate, endDate, category, pageRequest);
+        Pageable pageRequest = paginateDataWith(page, size);
+        Page<Event> events = eventRepository.findByNameLikeAndEventDateBetweenAndCategory(name, startDate, endDate, category, pageRequest);
          List<EventResponse> eventResponses = buildEventResponses(events.getContent());
          return new ApiResponse<>(eventResponses);
     }

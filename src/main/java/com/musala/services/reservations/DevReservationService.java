@@ -11,8 +11,8 @@ import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +21,9 @@ import java.util.List;
 import static com.musala.exception.ExceptionMessages.RESERVATION_NOT_FOUND;
 import static com.musala.models.enums.ReservationStatus.BOOKED;
 import static com.musala.models.enums.ReservationStatus.CANCELED;
-import static com.musala.util.AppUtil.createPageRequestWith;
+import static com.musala.util.AppUtil.paginateDataWith;
 
+@EnableCaching
 @Service
 @AllArgsConstructor
 public class DevReservationService implements ReservationService {
@@ -49,7 +50,7 @@ public class DevReservationService implements ReservationService {
     @Cacheable(cacheNames = "cache1", key = "'#key'")
     @Override
     public ApiResponse<List<ReservationResponse>> listReservations(Integer page, Integer size) {
-        PageRequest pageRequest = createPageRequestWith(page, size);
+        Pageable pageRequest = paginateDataWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findAll(pageRequest);
         List<ReservationResponse> reservationResponses = buildReservationResponseFrom(reservationPage);
         return new ApiResponse<>(reservationResponses);
@@ -58,7 +59,7 @@ public class DevReservationService implements ReservationService {
     @Override
     public ApiResponse<List<ReservationResponse>> viewBookedEvent(String email, Integer page, Integer size) {
         User user = userService.getUserByEmail(email);
-        Pageable pageable = createPageRequestWith(page, size);
+        Pageable pageable = paginateDataWith(page, size);
         Page<Reservation> reservationPage = reservationRepository.findReservationByUserV2(user, pageable);
         List<ReservationResponse > reservationList= buildReservationResponseFrom(reservationPage);
         return new ApiResponse<>(reservationList);

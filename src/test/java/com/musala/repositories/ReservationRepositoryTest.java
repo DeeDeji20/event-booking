@@ -3,7 +3,6 @@ package com.musala.repositories;
 import com.musala.models.Event;
 import com.musala.models.Reservation;
 import com.musala.models.User;
-import com.musala.models.enums.ReservationStatus;
 import com.musala.services.events.EventService;
 import com.musala.services.users.UserService;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class ReservationRepositoryTest {
     private UserService userService;
 
     @Test
-    @Sql(scripts = {"/db/insert.sql"})
+    @Sql(scripts = {"/db/data.sql"})
     public void testFindReservationByEvent() {
         ModelMapper mapper = new ModelMapper();
         Event event = mapper.map(eventService.getEventBy(1L), Event.class);
@@ -41,7 +40,7 @@ class ReservationRepositoryTest {
     }
 
     @Test
-    @Sql(scripts = {"/db/insert.sql"})
+    @Sql(scripts = {"/db/data.sql"})
     public void testFindReservation(){
         User user = userService.getUserByEmail("deolaoladeji@gmail.com");
         Page<Reservation> reservations = reservationRepository.findReservationByUserV2(user, PageRequest.of(1, 25));

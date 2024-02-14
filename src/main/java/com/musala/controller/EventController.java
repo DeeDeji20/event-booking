@@ -45,7 +45,7 @@ public class EventController {
                                           @RequestParam(value = "category", required = false) Category category,
                                           @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer page,
                                           @RequestParam(value = "pageSize", required = false, defaultValue = "25") Integer size){
-        ApiResponse<List<EventResponse>> eventResponse = eventService.searchForEvents(name, startDate, endDate, category, page, size);
+        ApiResponse<?> eventResponse = eventService.searchForEvents(name, startDate, endDate, category, page, size);
         return ResponseEntity.ok(eventResponse);
     }
 }

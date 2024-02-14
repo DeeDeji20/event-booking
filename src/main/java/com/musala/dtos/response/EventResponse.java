@@ -1,11 +1,14 @@
 package com.musala.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.musala.models.enums.Category;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Builder
@@ -14,13 +17,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EventResponse {
+public class EventResponse implements Serializable {
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
     private Category category;
     private UserResponse createdBy;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime eventDate;
-//    private int currentNumberOfAttendees;
     private Integer availableAttendeesCount;
 }

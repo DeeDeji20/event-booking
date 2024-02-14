@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class EventServiceTest {
     private EventCreationRequest eventCreationRequest;
 
-
     @Autowired
     private EventService eventService;
     @Autowired
     private JwtService jwtService;
-
+    private String authHeader;
     @BeforeEach
     void setup(){
+        String authHeader = jwtService.generateTokenFor("test@email.com");
         eventCreationRequest = EventCreationRequest.builder()
                 .name("John Doe")
                 .date(LocalDateTime.now())
@@ -76,10 +77,11 @@ class EventServiceTest {
     }
 
     @Test
+    @Sql(scripts = "/db/data.sql")
     void testFindAvailableEventByCategory(){
-        ApiResponse<List<EventResponse>> eventResponses = eventService.searchForEvents(null, null, null, GAME, 1, 10);
+        ApiResponse<List<EventResponse>> eventResponses = eventService.searchForEvents("First Game", null, null, GAME, 1, 10);
         assertNotNull(eventResponses);
-        assertThat(eventResponses.getData().size()).isEqualTo(1);
+        assertThat(eventResponses.getData().size()).isEqualTo(4);
     }
 
     @Test

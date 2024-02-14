@@ -3,6 +3,7 @@ package com.musala.services.notification;
 import com.musala.dtos.request.EmailNotificationRequest;
 import com.musala.dtos.response.EventResponse;
 import com.musala.models.Event;
+import com.musala.models.Notification;
 import com.musala.models.Reservation;
 import com.musala.models.User;
 import com.musala.services.events.EventService;
@@ -36,34 +37,39 @@ public class EventNotificationCron {
     private ModelMapper modelMapper;
     private final NotificationService notificationService;
     private final Configuration freemarkerConfig;
-    @Scheduled(cron = "0 0 0 * * *") // Runs every mid-night
+    @Scheduled(cron = "* * * * * *") // Runs every mid-night
     public void sendEventNotifications() {
         log.info("::::::::SCHEDULER STARTED::::::::");
         List<EventResponse> upcomingEvents = eventService.getAllEventsFor(LocalDate.now());
         System.out.println(upcomingEvents);
-        upcomingEvents.forEach(
-                eventResponse -> {
-                    List<Reservation> reservations = reservationService.getReservationsFor(modelMapper.map(eventResponse, Event.class));
-                    reservations
-                        .forEach(reservation -> {
-                            User user = reservation.getUser();
-                            try {
-                                Template template = freemarkerConfig.getTemplate(NOTIFICATION_TEMPLATE);
-                                String processedHtml =
-                                                    FreeMarkerTemplateUtils
-                                                        .processTemplateIntoString(template,
-                                                            prepareModel(user.getName(), reservation.getEvent().getEventDate()));
-                                EmailNotificationRequest emailNotificationRequest = new EmailNotificationRequest(user.getEmail(), processedHtml);
-                                String message = notificationService.sendHtmlEmail(emailNotificationRequest);
-                                log.info("::::::::DONE:::::::: {}", message);
-                            } catch (IOException | TemplateException e) {
-                                throw new RuntimeException(e);
-                            }
+        upcomingEvents.forEach(this::sendNotificationFor);
 
-                        });
-                }
-        );
+    }
 
+    private void sendNotificationFor(EventResponse eventResponse) {
+        Event event = modelMapper.map(eventResponse, Event.class);
+        List<Reservation> reservations = reservationService.getReservationsFor(event);
+        reservations.forEach(this::notifyUserOf);
+        Notification notification = new Notification();
+        notification.setEvent(event);
+        notificationService.createNotification(notification);
+    }
+
+    private void notifyUserOf(Reservation reservation) {
+        User user = reservation.getUser();
+        try {
+            Template template = freemarkerConfig.getTemplate(NOTIFICATION_TEMPLATE);
+            String processedHtml =
+                                FreeMarkerTemplateUtils
+                                    .processTemplateIntoString(template,
+                                        prepareModel(user.getName(), reservation.getEvent().getEventDate()));
+            EmailNotificationRequest emailNotificationRequest = new EmailNotificationRequest(user.getEmail(), processedHtml);
+            String message = notificationService.sendHtmlEmail(emailNotificationRequest);
+            log.info("::::::::DONE:::::::: {}", message);
+
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map<String, Object> prepareModel(String name, LocalDateTime date) {

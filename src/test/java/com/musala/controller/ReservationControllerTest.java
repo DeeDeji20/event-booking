@@ -1,9 +1,12 @@
 package com.musala.controller;
 
+import com.musala.security.services.JwtService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,34 +23,42 @@ public class ReservationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private JwtService jwtService;
+    private String token;
+
+
+
+    @BeforeEach
+    public void setUp(){
+        token =jwtService.generateTokenFor("deolaoladeji@gmail.com");
+    }
+
     @Test
-    @Sql(scripts = {"/db/insert.sql"})
+    @Sql(scripts = {"/db/data.sql"})
     public void cancelReservation() throws Exception {
-        String authHeader = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwiZXhwIjoxNzA3NjYwNzgxLCJpYXQiOjE3MDc1NzQzODF9.xh37ePeAJwsxPe91l6o9jVsvh0_cwnf1pn9OnwEgoPTevRt1vGYfFmdSm_5l7jtw0Z-2i504hSJX092wURSeFQ";
-
         mockMvc.perform(post("/api/v1/reservation/cancel/100")
-                        .header(AUTHORIZATION, authHeader))
+                        .header(AUTHORIZATION, "Bearer"+ token))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }
 
 
     @Test
-    @Sql(scripts = {"/db/insert.sql"})
+    @Sql(scripts = {"/db/data.sql"})
     public void viewUsersReservations() throws Exception {
-        String authHeader = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwiZXhwIjoxNzA3NjYwNzgxLCJpYXQiOjE3MDc1NzQzODF9.xh37ePeAJwsxPe91l6o9jVsvh0_cwnf1pn9OnwEgoPTevRt1vGYfFmdSm_5l7jtw0Z-2i504hSJX092wURSeFQ";
         mockMvc.perform(get("/api/v1/reservation/test@email.com")
-                        .header(AUTHORIZATION, authHeader))
+                        .header(AUTHORIZATION, "Bearer"+ token))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }
 
     @Test
-    @Sql(scripts = {"/db/insert.sql"})
+    @Sql(scripts = {"/db/data.sql"})
+    @WithMockUser(username = "john", authorities = {"USER"})
     public void findAllReservations() throws Exception {
-        String authHeader = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwiZXhwIjoxNzA3NjYwNzgxLCJpYXQiOjE3MDc1NzQzODF9.xh37ePeAJwsxPe91l6o9jVsvh0_cwnf1pn9OnwEgoPTevRt1vGYfFmdSm_5l7jtw0Z-2i504hSJX092wURSeFQ";
         mockMvc.perform(get("/api/v1/reservation?page=1&size=10")
-                        .header(AUTHORIZATION, authHeader))
+                        .header("AUTHORIZATION", "Bearer "+token))
                 .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }

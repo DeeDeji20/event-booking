@@ -22,7 +22,6 @@ import static org.springframework.http.HttpMethod.GET;
 public class SecurityConfig {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final DevEventAuthorizationFilter authorizationFilter;
 
 
     @Bean
@@ -32,7 +31,7 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                    .sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                    .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
-                   .addFilterBefore(authorizationFilter, DevEventAuthenticationFilter.class)
+                   .addFilterBefore(new DevEventAuthorizationFilter(jwtService), DevEventAuthenticationFilter.class)
                    .authorizeHttpRequests(c->c.requestMatchers("/auth/login", "/users").permitAll())
                    .authorizeHttpRequests(c->c.requestMatchers(GET, "/api/v1/reservation").hasAnyAuthority(USER.name()))
                    .authorizeHttpRequests(c->c.anyRequest().hasAnyAuthority(USER.name()))
