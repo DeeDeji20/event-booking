@@ -1,7 +1,7 @@
 package com.musala.services.users;
 
 import com.musala.dtos.request.UserRegistrationRequest;
-import com.musala.exception.AppException;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.models.User;
 import com.musala.repositories.UserRepository;
 import com.musala.security.models.Principal;
@@ -12,6 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
+import static com.musala.exception.ExceptionMessages.USER_NOT_FOUND;
+import static com.musala.models.enums.Authority.USER;
+import static com.musala.util.AppUtil.USER_CREATED_SUCCESSFULLY;
+
 @Service
 @AllArgsConstructor
 public class DevUserService implements UserService, UserDetailsService {
@@ -19,16 +25,15 @@ public class DevUserService implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
-    public String createUser(UserRegistrationRequest userRegistrationRequest) {
-        User foundUser = findUserBy(userRegistrationRequest.getEmail());
-        if (foundUser != null) throw new AppException(String.format("User with email %s already exists", foundUser.getEmail()));
+    public ApiResponse<String> createUser(UserRegistrationRequest userRegistrationRequest) {
         User user = User.builder()
                 .name(userRegistrationRequest.getName())
                 .email(userRegistrationRequest.getEmail())
                 .password(passwordEncoder.encode(userRegistrationRequest.getPassword()))
+                .authorities(Set.of(USER))
                 .build();
         userRepository.save(user);
-        return "User Created Successfully";
+        return new ApiResponse<>(USER_CREATED_SUCCESSFULLY);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class DevUserService implements UserService, UserDetailsService {
 
     private User findUserBy(String email){
         return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(
-                String.format("user with email %s does not exist", email)
+                String.format(USER_NOT_FOUND.getMessage(), email)
         ));
 
     }

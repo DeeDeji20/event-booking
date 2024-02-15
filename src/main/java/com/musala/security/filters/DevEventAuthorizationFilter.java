@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.Collection;
 import static com.musala.security.SecurityUtils.getAuthenticationWhiteList;
 
 
-@Component
 @AllArgsConstructor
 public class DevEventAuthorizationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
@@ -33,7 +31,7 @@ public class DevEventAuthorizationFilter extends OncePerRequestFilter {
         if (isEndpointPublic) {
             filterChain.doFilter(request, response);
         }else {
-            String authorizationHeader = request.getHeader("AUTHORIZATION");
+            String authorizationHeader = request.getHeader("Authorization");
             String token = extractTokenFrom(authorizationHeader);
             UserDetails userDetails = jwtService.extractUserDetailsFrom(token);
             authorize(userDetails);
@@ -45,7 +43,6 @@ public class DevEventAuthorizationFilter extends OncePerRequestFilter {
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, authorities);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

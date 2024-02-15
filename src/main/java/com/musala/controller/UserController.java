@@ -1,7 +1,9 @@
 package com.musala.controller;
 
 import com.musala.dtos.request.UserRegistrationRequest;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.services.users.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +19,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("")
-    public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest userRegistrationRequest){
-        String response = userService.createUser(userRegistrationRequest);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest userRegistrationRequest){
+        ApiResponse<String> response = userService.createUser(userRegistrationRequest);
         return ResponseEntity.ok(response);
     }
+
+
 
 }

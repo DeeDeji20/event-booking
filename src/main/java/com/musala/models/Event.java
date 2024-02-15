@@ -4,30 +4,27 @@ import com.musala.models.enums.Category;
 import com.musala.models.enums.EventStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
+@Setter
+@Getter
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @Size(max = 100)
     private String name;
     @NotNull
     private LocalDateTime eventDate;
-    private Integer maxAttendeesCount;
-    private Integer availableAttendeesCount;
-//    @Size(max = 500)
+    private int currentNumberOfAttendees;
+    private int availableAttendeesCount;
     private String description;
     @NotNull
     @Enumerated(EnumType.STRING)

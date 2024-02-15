@@ -1,63 +1,356 @@
-# Event Booking
+# Project Description
+The project entails development of RESTful services that facilitates easy booking/reservation of tickets.
+This application is secured using spring security.
 
-[[_TOC_]]
+The services include:
+- Creating a user and enabling user sign in.
+- Registration of an event.
+- Booking/Reservation of an event.
+- Searching for events.
+- Checking booked reservations.
+- Cancelling reservations.
+- Notifying users of their upcoming events.
+- Audit trail of notifications.
 
----
+# User Stories
 
-:scroll: **START**
+✅As a user, I want to be able to create an account
+so that I can access the system and perform
+various actions.
 
-## Introduction
+✅As a user, I want to be able to authenticate
+by providing my credentials (username and
+password) so that I can securely log into the system.
 
-In today's fast-paced world, the convenience of booking systems has become an essential aspect of daily life. From booking tickets for a concert or reserving a spot at a conference, these systems are used widely by individuals and businesses alike.
+✅As a user, I want to be able to create events by providing
+event details such as name, date, available attendees count,
+description, and category. This will allow me to organise and
+manage events within the system.
 
----
+✅As a user, I want to be able to search for events based on criteria so that I can
+find events of interest.
 
-## Task Description
+✅As a user, I want to be able to reserve tickets for events by
+selecting the desired event and specifying the number of
+tickets I want to reserve. This will enable me to secure my
+attendance at the event.
 
-The system will allow users to create, find and reserve tickets for events, view and manage their reservations and to be notified before the event kickoff.
+✅As a user, I want to receive notifications before an event
+starts so that I can be reminded and prepared for the upcoming
+event
 
-A **user** has:
+✅As a user, I want to be able to view my booked events
+
+✅As a user, I want to be able to cancel my reservation for an event so
+that I can free up my spot and allow someone else to attend in my place.
+
+✅When event time has passed, I want event status to be ended
+
+
+# Running Application
+To  start the application, do the following :
+- [JDK - least version should be 17](https://www.oracle.com/ng/java/technologies/downloads/)
+- [Maven 3](https://maven.apache.org/)
+- Run the following maven commands:
+    - mvn clean:clean
+    - mvn install
+    - mvn compile
+- Either execute the ` main ` method located in the /src/main/java/com/musala/Main.java class from your IDE or run mvn spring-boot:run
+
+
+## User Entity
 - name (limited to 100 characters);
 - email (valid email format);
 - password (minimum 8 characters).
 
-An **event** has:
+## Event Entity
 - name (limited to 100 characters);
 - date (in a valid date format);
 - available attendees count (positive integer limited to 1000);
 - event description (limited to 500 characters).
 - category (Concert, Conference, Game)
 
-Develop a set of REST service APIs based on the swagger file provided - [swagger file](event-booking-swagger.yml), that allows users to:
+## API Documentation
 
-- Create an account;
-- User authentication to log into the system;
-- Create events;
-- Search and reserve tickets for events;
-- Send notification to users before event starts.
+### User
 
-> Feel free to make assumptions for the design approach. 
+#### POST http://localhost:8080/users
 
-## Requirements
+- Create users
+  **Request Sample**
+```shell
+curl --location 'localhost:8080/users' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "John Doe",
+    "email": "test@gmail.com",
+    "password": "password"
+}'
 
-While implementing your solution **please take care of the following requirements:**
+```
+**Response Examples:**
+```json
+{
+  "data": "User Created Successfully"
+}
+```
 
-### Functional requirements
 
-- The REST API methods should be implemented based on the specification provided in the linked swagger file;
-- Add 2 new methods, one to **view** your booked events and one to **cancel** your reservation _**(both should be authorized)**_;
-- Introduce a periodic task to send notifications for upcoming events to users and create history/audit event log for this.
-- No need for UI;
+#### POST localhost:8080/auth/login
 
-### Non-functional requirements
+- Login
+  **Request Sample**
+```shell
+curl --location 'localhost:8080/auth/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"email":"test@gmail.com",
+"password":"password"
+}'
 
-- The project MUST be buildable and runnable;
-- The project MUST have Unit tests;
-- The project MUST have a README file with build/run/test instructions (use a DB that can be run locally, e.g. in-memory, via container);
-- Any data required by the application to run (e.g. reference tables, dummy data) MUST be preloaded in the database;
-- Input/output data MUST be in JSON format;
-- Use a framework of your choice, but popular, up-to-date, and long-term support versions are recommended.
+```
+**Response Examples:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDgwMjkxMDksImlhdCI6MTcwNzk0MjcwOX0.j1A2dTtPHbzVXo2pqmrDQLnWQgpcZk1gqdFDtmQvDAF0cQ_TyICBc2XkNZR0lvaFs-5wUwts1ktkV9rSt2Czxg"
+}
+```
 
----
 
-:scroll: **END**
+### Event
+#### GET http://localhost:8080/events?name=dev%20game&category=GAME&pageNumber=1&pageSize=25
+- Get events by search criteria
+```shell
+curl -X 'GET' \
+  'http://localhost:8080/events?name=dev%20game&category=GAME&pageNumber=1&pageSize=25' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDgwMjkxMDksImlhdCI6MTcwNzk0MjcwOX0.j1A2dTtPHbzVXo2pqmrDQLnWQgpcZk1gqdFDtmQvDAF0cQ_TyICBc2XkNZR0lvaFs-5wUwts1ktkV9rSt2Czxg'
+```
+**Response Examples:**
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "First event",
+    "category": "GAME",
+    "createdBy": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "test@gmail.com"
+    },
+    "eventDate": "2024-02-16T16:09:10",
+    "availableAttendeesCount": 1000
+  }
+}
+```
+
+
+#### POST http://localhost:8080/events
+- Create events
+
+```shell
+curl --location 'localhost:8080/events' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDc5MTYwNzMsImlhdCI6MTcwNzgyOTY3M30.qiWBCLMn_C3Sk3106zFZOMsOVb15LNzWwib4kWXMST5WLbVj96Z869PgVJ4OxgH501Z-6iRzd-W2rI0EOHU7EA' \
+--data '{
+  "name": "First event",
+  "date": "2024-02-16T16:09:10",
+  "availableAttendeesCount": 1000,
+  "description": "test description",
+  "category": "GAME"
+}'
+```
+
+**Response Examples:**
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "First event",
+    "category": "GAME",
+    "createdBy": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "test@gmail.com"
+    },
+    "eventDate": "2024-02-16T16:09:10",
+    "availableAttendeesCount": 1000
+  }
+}
+```
+
+
+
+#### POST http://localhost:8080/events/1/tickets
+- Reserve ticket for event
+
+```shell
+
+curl --location 'localhost:8080/events/1/tickets' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDc5MDA4MTgsImlhdCI6MTcwNzgxNDQxOH0.4Bg7dJF9PTQwSijWt5kUqc0L6DhXMaXZVwF-FJM-Ed5TjNjT6WTT7tNBPm8U7H8PrR2Cp8lkxwJ04qGkIzo6Yg' \
+--data '{
+"attendeesCount": 5
+}'
+```
+
+**Response Examples:**
+```json
+{
+  "data": {
+    "message": "Tickets reserved successfully"
+  }
+}
+```
+
+### Reservation
+
+#### GET http://localhost:8080/reservation
+- Get all reservations
+
+```shell
+
+curl --location 'localhost:8080/api/v1/reservation?page=1&size=10' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDgwMjkxMDksImlhdCI6MTcwNzk0MjcwOX0.j1A2dTtPHbzVXo2pqmrDQLnWQgpcZk1gqdFDtmQvDAF0cQ_TyICBc2XkNZR0lvaFs-5wUwts1ktkV9rSt2Czxg'
+```
+
+**Response Examples:**
+```json
+{
+  "data": [
+    {
+      "id": 104,
+      "ticketCount": 5,
+      "reservationStatus": "BOOKED",
+      "event": {
+        "id": 8,
+        "name": "dev zone",
+        "category": "CONFERENCE",
+        "eventDate": "2024-01-15T10:00:00",
+        "availableAttendeesCount": 0
+      }
+    }
+  ]
+}
+```
+
+
+#### POST http://localhost:8080/reservation/cancel/1
+- Cancel Reservation
+
+```shell
+curl --location --request POST 'localhost:8080/api/v1/reservation/cancel/1' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDc5MDI0MjYsImlhdCI6MTcwNzgxNjAyNn0.USTPXfJKYWpj5fDrSFdLYZO_QS5QSNOR3Jg8cGKE0Kqlxuo8xyub-LCceUIUjyfIWxeujbJOARMV-0ilkKxzBw'
+```
+
+**Response Examples:**
+```json
+{
+  "data": {
+    "id": 1,
+    "ticketCount": 5,
+    "reservationStatus": "CANCELED",
+    "createdAt": "2024-02-13T10:20:44.258161",
+    "event": {
+      "id": 1,
+      "name": "First event",
+      "category": "GAME",
+      "createdBy": {
+        "id": 1,
+        "name": "Adeola Oladeji",
+        "email": "deolaoladeji@gmail.com"
+      },
+      "eventDate": "2024-02-16T16:09:10",
+      "availableAttendeesCount": 1000
+    }
+  }
+}
+```
+
+
+#### GET localhost:8080/api/v1/reservation/test@gmail.com
+- Get all users reservation
+
+```shell
+curl --location 'localhost:8080/api/v1/reservation/test@gmail.com' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlb2xhb2xhZGVqaUBnbWFpbC5jb20iLCJleHAiOjE3MDc5MDA4MTgsImlhdCI6MTcwNzgxNDQxOH0.4Bg7dJF9PTQwSijWt5kUqc0L6DhXMaXZVwF-FJM-Ed5TjNjT6WTT7tNBPm8U7H8PrR2Cp8lkxwJ04qGkIzo6Yg'
+
+```
+
+**Response Examples:**
+```json
+{
+    "data": [
+        {
+            "id": 104,
+            "ticketCount": 5,
+            "reservationStatus": "BOOKED",
+            "event": {
+                "id": 8,
+                "name": "dev zone",
+                "category": "CONFERENCE",
+                "eventDate": "2024-01-15T10:00:00",
+                "availableAttendeesCount": 0,
+                "eventStatus": "ACTIVE"
+            }
+        },
+        {
+            "id": 103,
+            "ticketCount": 3,
+            "reservationStatus": "BOOKED",
+            "event": {
+                "id": 5,
+                "name": "dev hangout",
+                "category": "GAME",
+                "eventDate": "2024-01-15T10:00:00",
+                "availableAttendeesCount": 100,
+                "eventStatus": "ACTIVE"
+            }
+        },
+        {
+            "id": 101,
+            "ticketCount": 1,
+            "reservationStatus": "BOOKED",
+            "event": {
+                "id": 6,
+                "name": "dev lottery",
+                "category": "GAME",
+                "eventDate": "2024-01-15T10:00:00",
+                "availableAttendeesCount": 50,
+                "eventStatus": "ACTIVE"
+            }
+        },
+        {
+            "id": 100,
+            "ticketCount": 4,
+            "reservationStatus": "BOOKED",
+            "event": {
+                "id": 1,
+                "name": "dev games",
+                "category": "GAME",
+                "eventDate": "2024-01-15T10:00:00",
+                "availableAttendeesCount": 50,
+                "eventStatus": "ACTIVE"
+            }
+        }
+    ]
+}
+```
+
+# Swagger Documentation
+The swagger documentation can be found here:
+
+http://localhost:8080/swagger-ui/index.html
+
+# Considerations
+The project follows a MVC (Model-View-Controller) architectural 
+design model and this is to effectively adhere to some of the design principles (SOLID principle)
+that fosters separation of concerns.
+The controller delegate tasks to the appropriate service where the business logic is performed.
+
+The application uses in-memory H2 Database storage for persisting data.
+H2 database’s lightweight nature and in-memory capabilities make it a convenient
+choice for temporary data storage during application development.
+
+
+

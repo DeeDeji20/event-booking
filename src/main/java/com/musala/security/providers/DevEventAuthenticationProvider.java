@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import static com.musala.util.AppUtil.INCORRECT_CREDENTIALS;
+
 
 @Component
 @AllArgsConstructor
@@ -26,9 +28,7 @@ public class DevEventAuthenticationProvider implements AuthenticationProvider {
 
         boolean isPasswordValid = passwordEncoder.matches(password, userDetails.getPassword());
         if (isPasswordValid) return new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
-
-        //TODO: remove hardcoded values
-        throw new BadCredentialsException("Incorrect Authentication Credentials Supplied");
+        throw new BadCredentialsException(INCORRECT_CREDENTIALS);
     }
 
     @Override

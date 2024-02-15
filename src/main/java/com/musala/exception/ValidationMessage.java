@@ -1,4 +1,4 @@
-package com.musala.dtos.response;
+package com.musala.exception;
 
 import lombok.*;
 

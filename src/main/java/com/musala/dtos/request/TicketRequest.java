@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketRequest {
-    private Integer attendeesCount;
+    private int attendeesCount;
 }
