@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.musala.models.enums.EventStatus.ENDED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -63,5 +64,12 @@ class EventRepositoryTest {
         var events = eventRepository.findByNameLikeAndEventDateBetweenAndCategory("dev zone", null, null, null, null);
         assertThat(events).isNotNull();
         assertThat(events.getContent()).isNotEmpty();
+    }
+
+    @Test
+    public void updateEventsByEventDate() {
+        LocalDate date = LocalDate.of(2024, 1, 18);
+        eventRepository.updateEventsByEventDate(date, ENDED);
+        eventRepository.findEventByEventDate(date).forEach(event -> assertThat(event.getEventStatus()).isEqualTo(ENDED));
     }
 }

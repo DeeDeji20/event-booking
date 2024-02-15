@@ -60,7 +60,7 @@ public class DevReservationService implements ReservationService {
     public ApiResponse<List<ReservationResponse>> viewBookedEvent(String email, Integer page, Integer size) {
         User user = userService.getUserByEmail(email);
         Pageable pageable = paginateDataWith(page, size);
-        Page<Reservation> reservationPage = reservationRepository.findReservationByUserV2(user, pageable);
+        Page<Reservation> reservationPage = reservationRepository.findReservationByUserV2(user,BOOKED, pageable);
         List<ReservationResponse > reservationList= buildReservationResponseFrom(reservationPage);
         return new ApiResponse<>(reservationList);
     }

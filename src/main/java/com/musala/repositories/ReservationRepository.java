@@ -14,8 +14,8 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Page<Reservation> findReservationByUser(User user, Pageable pageable);
 
-    @Query("SELECT r FROM Reservation r WHERE r.user = :user AND CAST(r.reservationStatus AS STRING ) != 'CANCELED'")
-    Page<Reservation> findReservationByUserV2(User user, Pageable pageable);
+    @Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.reservationStatus =:reservationStatus")
+    Page<Reservation> findReservationByUserV2(User user, ReservationStatus reservationStatus, Pageable pageable);
 
     List<Reservation> findReservationByEventAndReservationStatus(Event event, ReservationStatus reservationStatus);
 }

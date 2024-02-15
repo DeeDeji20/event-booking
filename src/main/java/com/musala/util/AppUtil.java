@@ -9,6 +9,8 @@ import static java.math.BigInteger.ZERO;
 
 public class AppUtil {
     public static final String EMAIL = "email";
+
+    public static final String EMAIL_REGEX = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
     public static final String TIME_FORMAT = "hh:mm a";
     public static final String NAME = "name";
     public static final String DATE = "date";

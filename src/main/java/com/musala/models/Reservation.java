@@ -2,24 +2,21 @@ package com.musala.models;
 
 import com.musala.models.enums.ReservationStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.CascadeType.MERGE;
-import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@Setter
+@Getter
 public class Reservation implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -29,7 +26,7 @@ public class Reservation implements Serializable {
     private ReservationStatus reservationStatus;
     @ManyToOne
     private User user;
-    @ManyToOne(cascade = {PERSIST, MERGE})
+    @ManyToOne(cascade = {MERGE})
     private Event event;
 
     private Integer ticketCount;

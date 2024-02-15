@@ -2,6 +2,7 @@ package com.musala.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musala.dtos.request.LoginRequest;
+import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.LoginResponse;
 import com.musala.security.services.JwtService;
 import jakarta.servlet.FilterChain;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static com.musala.util.AppUtil.AUTHENTICATION_FAILURE;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
@@ -36,11 +38,8 @@ public class DevEventAuthenticationFilter extends UsernamePasswordAuthentication
 
         LoginRequest loginRequest = extractAuthenticationCredentialsFrom(request);
 
-         //1. Create an Authentication object that is not yet authenticated
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-         // 2. Use the AuthenticationManager to authenticate the unAuthenticated Authentication object
         Authentication authenticationResult = authenticationManager.authenticate(authentication);
-        //3. Put the now authenticated Authentication object in the SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authenticationResult);
         return authenticationResult;
     }
@@ -51,19 +50,24 @@ public class DevEventAuthenticationFilter extends UsernamePasswordAuthentication
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authResult) throws IOException {
         String token = jwtService.generateTokenFor(authResult.getPrincipal().toString());
 
         LoginResponse authenticationResponse = new LoginResponse();
         authenticationResponse.setAccessToken(token);
-        response.getOutputStream().write(mapper.writeValueAsBytes(authenticationResponse));
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.getOutputStream().write(mapper.writeValueAsBytes(authenticationResponse));
         response.flushBuffer();
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        apiResponse.setData(failed.getMessage());
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(BAD_REQUEST.value());
+        response.getOutputStream().write(mapper.writeValueAsBytes(apiResponse));
+        response.flushBuffer();
     }
 
     private static LoginRequest extractAuthenticationCredentialsFrom(HttpServletRequest request) {

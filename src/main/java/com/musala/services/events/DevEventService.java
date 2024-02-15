@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.musala.exception.ExceptionMessages.EVENT_HAS_ENDED;
 import static com.musala.exception.ExceptionMessages.EVENT_NOT_FOUND;
+import static com.musala.models.enums.EventStatus.ENDED;
 import static com.musala.models.enums.EventStatus.UPCOMING;
 import static com.musala.util.AppUtil.*;
 
@@ -103,6 +104,11 @@ public class DevEventService implements EventService {
     public List<EventResponse> getAllEventsFor(LocalDate date) {
         return  buildEventResponses(eventRepository.findEventByEventDate(date));
 
+    }
+
+    @Override
+    public void disableEventsFor(LocalDate date) {
+        eventRepository.updateEventsByEventDate(date, ENDED);
     }
 
     private void reserveTicket(Event foundEvent, int numberOfTickets) {

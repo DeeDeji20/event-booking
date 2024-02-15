@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.musala.util.AppUtil.*;
+import static java.math.BigInteger.ONE;
 
 @Slf4j
 @Component
@@ -37,13 +38,14 @@ public class EventNotificationCron {
     private ModelMapper modelMapper;
     private final NotificationService notificationService;
     private final Configuration freemarkerConfig;
-    @Scheduled(cron = "* * * * * *") // Runs every mid-night
+    @Scheduled(cron = "0 0 0 * * *") // Runs every mid-night
     public void sendEventNotifications() {
         log.info("::::::::SCHEDULER STARTED::::::::");
-        List<EventResponse> upcomingEvents = eventService.getAllEventsFor(LocalDate.now());
-        System.out.println(upcomingEvents);
+        LocalDate today = LocalDate.now();
+        List<EventResponse> upcomingEvents = eventService.getAllEventsFor(today);
         upcomingEvents.forEach(this::sendNotificationFor);
-
+        int daysToSubtract = ONE.intValueExact();
+        eventService.disableEventsFor(today.minusDays(daysToSubtract));
     }
 
     private void sendNotificationFor(EventResponse eventResponse) {
@@ -54,6 +56,8 @@ public class EventNotificationCron {
         notification.setEvent(event);
         notificationService.createNotification(notification);
     }
+
+
 
     private void notifyUserOf(Reservation reservation) {
         User user = reservation.getUser();

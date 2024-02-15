@@ -22,4 +22,7 @@ public interface EventService {
 
 
     List<EventResponse> getAllEventsFor(LocalDate date);
+
+    void disableEventsFor(LocalDate today);
+
 }

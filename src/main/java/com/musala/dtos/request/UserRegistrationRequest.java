@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import static com.musala.util.AppUtil.EMAIL_REGEX;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class UserRegistrationRequest {
     @Size(max = 100)
     private String name;
     @NotNull
-    @Email
+    @Email(regexp = EMAIL_REGEX)
     private String email;
     @NotBlank
     @Size(min = 8)

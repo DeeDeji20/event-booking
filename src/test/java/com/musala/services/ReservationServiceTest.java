@@ -23,6 +23,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Sql(scripts = {"/db/data.sql"})
 class ReservationServiceTest {
 
     @Autowired
@@ -32,26 +33,23 @@ class ReservationServiceTest {
     @BeforeEach
     void setup(){
         user.setId(1L);
-        user.setEmail("test@email.com");
+        user.setEmail("deolaoladeji@gmail.com");
         user.setAuthorities(Set.of(Authority.USER));
     }
 
     @Test
-    @Sql(scripts = {"/db/data.sql"})
     public void testToGetReservation(){
         ReservationResponse response = reservationService.getReservationBy(101L);
         assertThat(response).isNotNull();
     }
 
     @Test
-    @Sql(scripts = {"/db/data.sql"})
     void testToViewUsersBookedEvent(){
-        ApiResponse<List<ReservationResponse>> response =reservationService.viewBookedEvent("test@email.com", 1, 15);
-        assertThat(response.getData().size()).isEqualTo(5L);
+        ApiResponse<List<ReservationResponse>> response =reservationService.viewBookedEvent("deolaoladeji@gmail.com", 1, 15);
+        assertThat(response.getData().size()).isEqualTo(4L);
     }
 
     @Test
-    @Sql(scripts = {"/db/data.sql"})
     public void testThatReservationCanBeCanceled(){
         ApiResponse<ReservationResponse> response = reservationService.cancelReservation(100L);
         assertThat(response.getData()).isNotNull();
@@ -61,7 +59,6 @@ class ReservationServiceTest {
 
 
     @Test
-    @Sql(scripts = {"/db/data.sql"})
     void getReservationFor(){
         Event event = new Event();
         event.setId(5L);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.musala.models.enums.Category;
+import com.musala.models.enums.EventStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -26,4 +27,6 @@ public class EventResponse implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime eventDate;
     private Integer availableAttendeesCount;
+    private Integer currentNumberOfAttendees;
+    private EventStatus eventStatus;
 }

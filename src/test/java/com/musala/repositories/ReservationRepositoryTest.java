@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 import static com.musala.models.enums.ReservationStatus.BOOKED;
+import static com.musala.models.enums.ReservationStatus.CANCELED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -33,9 +34,8 @@ class ReservationRepositoryTest {
     @Sql(scripts = {"/db/data.sql"})
     public void testFindReservationByEvent() {
         ModelMapper mapper = new ModelMapper();
-        Event event = mapper.map(eventService.getEventBy(1L), Event.class);
+        Event event = mapper.map(eventService.getEventBy(100L), Event.class);
         List<Reservation> reservations = reservationRepository.findReservationByEventAndReservationStatus(event, BOOKED);
-        System.out.println(reservations);
         assertThat(reservations).isNotEmpty();
     }
 
@@ -43,7 +43,7 @@ class ReservationRepositoryTest {
     @Sql(scripts = {"/db/data.sql"})
     public void testFindReservation(){
         User user = userService.getUserByEmail("deolaoladeji@gmail.com");
-        Page<Reservation> reservations = reservationRepository.findReservationByUserV2(user, PageRequest.of(1, 25));
-        System.out.println(reservations.getContent());
+        Page<Reservation> reservations = reservationRepository.findReservationByUserV2(user, CANCELED, PageRequest.of(0, 25));
+        assertThat(reservations).isNotEmpty();
     }
 }

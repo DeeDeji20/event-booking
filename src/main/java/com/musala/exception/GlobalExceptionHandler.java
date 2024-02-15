@@ -31,7 +31,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationMessage ValidationMessageHandleAuthenticationException(Exception ex) {
-        System.out.println("exception: "+ex.getMessage()+" "+ex);
         ValidationMessage errorMessage =
                 new ValidationMessage(new Date(), 0, ex.getMessage());
         return errorMessage;
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest req) {
         String path = ((ServletWebRequest) req).getRequest().getRequestURI();
         ValidationMessage errorMessage =

@@ -1,17 +1,11 @@
 package com.musala.controller;
 
 import com.musala.dtos.response.ApiResponse;
-import com.musala.dtos.response.ReservationList;
-import com.musala.dtos.response.ReservationResponse;
-import com.musala.security.services.JwtService;
 import com.musala.services.reservations.ReservationService;
-import com.musala.services.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController

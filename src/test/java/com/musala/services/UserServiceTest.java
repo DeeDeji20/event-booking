@@ -2,7 +2,6 @@ package com.musala.services;
 
 import com.musala.dtos.request.UserRegistrationRequest;
 import com.musala.dtos.response.ApiResponse;
-import com.musala.exception.AppException;
 import com.musala.services.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Sql(scripts = {"/db/data.sql"})
 class UserServiceTest {
 
     @Autowired

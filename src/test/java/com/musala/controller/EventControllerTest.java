@@ -11,10 +11,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static com.musala.models.enums.Category.GAME;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,14 +42,13 @@ class EventControllerTest {
 
     @BeforeEach
     public void setUp(){
-        token =jwtService.generateTokenFor("test@email.com");
+        token =jwtService.generateTokenFor("deolaoladeji@gmail.com");
     }
 
     @Test
-    @WithMockUser
     public void createEventTest() throws Exception {
         var eventCreationRequest = EventCreationRequest.builder()
-                .name("John Doe")
+                .name("test")
                 .date(LocalDateTime.now())
                 .category("GAME")
                 .availableAttendeesCount(100)
@@ -65,11 +69,26 @@ class EventControllerTest {
     public void reserveTicketTest() throws Exception {
         TicketRequest ticketRequest = new TicketRequest();
         ticketRequest.setAttendeesCount(10);
-        mockMvc.perform(post("/events/1/tickets")
+        mockMvc.perform(post("/events/100/tickets")
                 .header(AUTHORIZATION, "Bearer "+token)
                 .content(mapper.writeValueAsBytes(ticketRequest))
                 .contentType(APPLICATION_JSON_VALUE))
                 .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+    }
+
+    @Test
+    public void getTicketsTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/events")
+                        .header(AUTHORIZATION, "Bearer "+token)
+                        .param("name", "dev games")
+                        .param("startDate", LocalDate.of(2024, 3, 15).toString())
+                        .param("endDate", LocalDate.of(2024, 3, 15).toString())
+                        .param("category", GAME.toString())
+                        .param("page", String.valueOf(1))
+                        .param("size", String.valueOf(10))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print());
     }
 }
