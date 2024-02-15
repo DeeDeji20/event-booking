@@ -1,4 +1,4 @@
-package com.musala.eventBooking.services;
+package com.musala.services;
 
 import com.musala.dtos.response.ApiResponse;
 import com.musala.dtos.response.EventReservationResponse;

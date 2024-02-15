@@ -1,4 +1,4 @@
-package com.musala.eventBooking.services;
+package com.musala.services;
 
 import com.musala.dtos.request.UserRegistrationRequest;
 import com.musala.exception.AppException;
