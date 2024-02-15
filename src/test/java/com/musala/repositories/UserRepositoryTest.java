@@ -22,6 +22,7 @@ class UserRepositoryTest {
         String email = "test@email.com";
         User user = new User();
         user.setEmail(email);
+        user.setName("John Doe");
         user.setPassword("password");
         user.setAuthorities(Set.of(Authority.USER));
         userRepository.save(user);

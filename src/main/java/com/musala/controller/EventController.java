@@ -7,6 +7,7 @@ import com.musala.dtos.response.EventResponse;
 import com.musala.dtos.response.TicketResponse;
 import com.musala.models.enums.Category;
 import com.musala.services.events.EventService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -38,10 +39,10 @@ public class EventController {
 
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<?> findEventByCriteria(
-                                           @RequestParam(value = "name", required = false) String name,
-                                          @RequestParam(value = "start_date", required = false) LocalDateTime startDate,
-                                          @RequestParam(value = "end_date", required = false) LocalDateTime endDate,
-                                          @RequestParam(value = "category", required = false) Category category,
+                                          @RequestParam(value = "name") String name,
+                                          @RequestParam(value = "start_date") @Parameter(example = "2024-03-15T10:00:00") LocalDateTime startDate,
+                                          @RequestParam(value = "end_date") @Parameter(example = "2024-03-16T10:00:00") LocalDateTime endDate,
+                                          @RequestParam(value = "category") Category category,
                                           @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer page,
                                           @RequestParam(value = "pageSize", required = false, defaultValue = "25") Integer size){
         ApiResponse<?> eventResponse = eventService.searchForEvents(name, startDate, endDate, category, page, size);

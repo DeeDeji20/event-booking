@@ -23,7 +23,7 @@ import static com.musala.models.enums.ReservationStatus.BOOKED;
 import static com.musala.models.enums.ReservationStatus.CANCELED;
 import static com.musala.util.AppUtil.paginateDataWith;
 
-@EnableCaching
+//@EnableCaching
 @Service
 @AllArgsConstructor
 public class DevReservationService implements ReservationService {
@@ -47,7 +47,7 @@ public class DevReservationService implements ReservationService {
         reservationRepository.save(reservation);
     }
 
-    @Cacheable(cacheNames = "cache1", key = "'#key'")
+//    @Cacheable(cacheNames = "cache1", key = "'#key'")
     @Override
     public ApiResponse<List<ReservationResponse>> listReservations(Integer page, Integer size) {
         Pageable pageRequest = paginateDataWith(page, size);
